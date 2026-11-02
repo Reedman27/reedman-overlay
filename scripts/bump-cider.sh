@@ -1,70 +1,69 @@
 #!/usr/bin/env bash
-# Look at Cider Collective's apt repo, and if there is a newer cider than the
-# newest ebuild here, generate media-sound/cider-bin-<ver>.ebuild + Manifest.
+# Find the newest cider-v<ver>-linux-x64.deb in Cider Collective's apt pool and
+# generate media-sound/cider-bin/cider-bin-<ver>.ebuild (+ Manifest) for it.
+# Reads the pool directory listing directly: the repo's Packages index has been
+# empty since Aug 2026, so apt-style lookups find nothing.
 #
-#   scripts/bump-cider.sh            # make the ebuild, update Manifest
+#   scripts/bump-cider.sh            # make/refresh the ebuild
 #   scripts/bump-cider.sh --commit   # ...and git commit it
-#   PKG=cider5 scripts/bump-cider.sh # if a future major gets a new package name
+#   ARCH=arm64 scripts/bump-cider.sh # other arch (also change KEYWORDS yourself)
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://repo.cider.sh/apt}"
-SUITE="${SUITE:-stable}"
-PKG="${PKG:-cider}"
+POOL_URL="${POOL_URL:-https://repo.cider.sh/apt/pool/}"
+ARCH="${ARCH:-x64}"
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 PKGDIR="$HERE/media-sound/cider-bin"
 TMPL="$HERE/scripts/cider-bin.ebuild.in"
 
-# PACKAGES_FILE lets you test against a saved index without the network
-if [[ -n "${PACKAGES_FILE:-}" ]]; then
-	index="$(cat "$PACKAGES_FILE")"
-else
-	index="$(curl -fsSL "$REPO_URL/dists/$SUITE/main/binary-amd64/Packages" 2>/dev/null \
-		|| curl -fsSL "$REPO_URL/dists/$SUITE/main/binary-amd64/Packages.gz" | gunzip)"
-fi
+crawl() {
+	local l
+	for l in $(curl -fsSL "$1" | grep -o 'href="[^"?]*"' | cut -d'"' -f2 | grep -v '^\.\./$'); do
+		case "$l" in
+			*/) crawl "$1$l" ;;
+			*-linux-"$ARCH".deb) echo "$1$l" ;;
+		esac
+	done
+}
 
-# newest stanza for $PKG: print "Version|Filename|SHA256"
-line="$(awk -v pkg="$PKG" -v RS= -v FS='\n' '
-	{ p=v=f=s=""
-	  for (i=1;i<=NF;i++) {
-	    if ($i ~ /^Package: /)  p=substr($i,10)
-	    if ($i ~ /^Version: /)  v=substr($i,10)
-	    if ($i ~ /^Filename: /) f=substr($i,11)
-	    if ($i ~ /^SHA256: /)   s=substr($i,9)
-	  }
-	  if (p==pkg) print v "|" f "|" s }' <<<"$index" | sort -t'|' -k1,1V | tail -n1)"
+# LISTING_FILE: a saved list of URLs, for testing without the network
+if [[ -n "${LISTING_FILE:-}" ]]; then urls="$(grep -E -- "-linux-$ARCH\.deb$" "$LISTING_FILE")"
+else urls="$(crawl "$POOL_URL")"; fi
+[[ -n "$urls" ]] || { echo "no *-linux-$ARCH.deb files found under $POOL_URL" >&2; exit 1; }
 
-[[ -n "$line" ]] || { echo "no package '$PKG' in $REPO_URL ($SUITE)" >&2; exit 1; }
-IFS='|' read -r debver filename sha256 <<<"$line"
-
-pv="${debver#*:}"        # drop epoch
-pv="${pv%%-*}"           # drop debian revision
-pv="${pv//[^0-9A-Za-z._]/}"
+# newest by version number: cider-v4.0.17-linux-x64.deb -> 4.0.17
+uri="$(while read -r u; do
+	v="${u##*/cider-v}"; v="${v%-linux-$ARCH.deb}"
+	[[ "$v" =~ ^[0-9]+(\.[0-9]+)*$ ]] && echo "$v $u"
+done <<<"$urls" | sort -V | tail -n1)"
+pv="${uri%% *}"; uri="${uri#* }"
 ebuild="$PKGDIR/cider-bin-$pv.ebuild"
-uri="$REPO_URL/$filename"
 
-echo "upstream: $debver  ->  cider-bin-$pv   ($uri)"
-if [[ -e "$ebuild" ]]; then echo "already have $ebuild, nothing to do"; exit 0; fi
+echo "newest upstream: $pv  ($uri)"
+if [[ -e "$ebuild" ]] && ! grep -q 'fetch' "$ebuild"; then
+	echo "already have $ebuild, nothing to do"; exit 0
+fi
+[[ -e "$ebuild" ]] && echo "converting the old fetch-restricted ebuild to auto-download"
 
 sed "s|@URI@|$uri|" "$TMPL" > "$ebuild"
 
-# Fetch + write Manifest (needs permission to write DISTDIR, so run as root or
-# in the portage group), then verify against the checksum the repo published.
-ebuild "$ebuild" manifest
-distfile="$(portageq distdir 2>/dev/null || echo /var/cache/distfiles)/cider-bin-$pv.deb"
-if [[ -n "$sha256" && -r "$distfile" ]]; then
-	got="$(sha256sum "$distfile" | cut -d' ' -f1)"
-	if [[ "$got" != "$sha256" ]]; then
-		echo "SHA256 MISMATCH: repo says $sha256, got $got" >&2
-		rm -f "$ebuild"; exit 1
-	fi
-	echo "sha256 matches the apt index"
-fi
+# only the newest ebuild is kept (git history has the old ones); the Manifest is
+# rebuilt from scratch so stale DIST lines for old distfiles don't linger
+find "$PKGDIR" -name 'cider-bin-*.ebuild' ! -name "cider-bin-$pv.ebuild" -print -delete
+rm -f "$PKGDIR/Manifest"
 
-# keep only the two newest ebuilds
-ls "$PKGDIR"/cider-bin-*.ebuild | sort -V | head -n -2 | xargs -r rm -v
+ebuild "$ebuild" manifest      # downloads the deb and records its hashes
+
+# sanity: it must really be a .deb (ar archive), not an HTML error page
+dist="$(portageq distdir 2>/dev/null || echo /var/cache/distfiles)/cider-bin-$pv.deb"
+if [[ -r "$dist" ]] && [[ "$(head -c 7 "$dist")" != '!<arch>' ]]; then
+	echo "downloaded file is not a .deb, removing the ebuild" >&2
+	rm -f "$ebuild" "$PKGDIR/Manifest"; exit 1
+fi
+# Note: the repo's index is empty, so there is no upstream checksum to compare
+# against. The Manifest now pins THIS download's hashes (trust on first use).
 
 if [[ "${1:-}" == "--commit" ]]; then
 	git -C "$HERE" add -A media-sound/cider-bin
-	git -C "$HERE" commit -m "media-sound/cider-bin: bump to $pv"
+	git -C "$HERE" commit -m "media-sound/cider-bin: bump to $pv" || true
 fi
 echo "done: emerge -av media-sound/cider-bin"
