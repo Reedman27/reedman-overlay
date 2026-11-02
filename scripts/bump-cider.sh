@@ -15,6 +15,11 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 PKGDIR="$HERE/media-sound/cider-bin"
 TMPL="$HERE/scripts/cider-bin.ebuild.in"
 
+# Download into your own home, so no extra privileges (no portage group) are
+# needed. `emerge` later fetches + hash-checks it itself, as root.
+export DISTDIR="${DISTDIR:-$HOME/.cache/cider-bin-distfiles}"
+mkdir -p "$DISTDIR"
+
 crawl() {
 	local l
 	for l in $(curl -fsSL "$1" | grep -o 'href="[^"?]*"' | cut -d'"' -f2 | grep -v '^\.\./$'); do
@@ -39,10 +44,16 @@ pv="${uri%% *}"; uri="${uri#* }"
 ebuild="$PKGDIR/cider-bin-$pv.ebuild"
 
 echo "newest upstream: $pv  ($uri)"
-if [[ -e "$ebuild" ]] && ! grep -q 'fetch' "$ebuild"; then
+# up to date only if the ebuild is auto-download AND has a Manifest with its hashes
+if [[ -e "$ebuild" && -s "$PKGDIR/Manifest" ]] && ! grep -q 'fetch' "$ebuild"; then
 	echo "already have $ebuild, nothing to do"; exit 0
 fi
-[[ -e "$ebuild" ]] && echo "converting the old fetch-restricted ebuild to auto-download"
+[[ -e "$ebuild" ]] && echo "(re)generating $ebuild and its Manifest"
+
+# back everything up first so a failed download leaves the repo as it was
+bk="$(mktemp -d)"
+cp -a "$PKGDIR/." "$bk/"
+restore() { rm -rf "$PKGDIR"; mkdir -p "$PKGDIR"; cp -a "$bk/." "$PKGDIR/"; rm -rf "$bk"; }
 
 sed "s|@URI@|$uri|" "$TMPL" > "$ebuild"
 
@@ -51,14 +62,18 @@ sed "s|@URI@|$uri|" "$TMPL" > "$ebuild"
 find "$PKGDIR" -name 'cider-bin-*.ebuild' ! -name "cider-bin-$pv.ebuild" -print -delete
 rm -f "$PKGDIR/Manifest"
 
-ebuild "$ebuild" manifest      # downloads the deb and records its hashes
+if ! ebuild "$ebuild" manifest; then      # downloads the deb and records its hashes
+	echo "download/manifest failed, restoring the previous files" >&2
+	restore; exit 1
+fi
 
 # sanity: it must really be a .deb (ar archive), not an HTML error page
-dist="$(portageq distdir 2>/dev/null || echo /var/cache/distfiles)/cider-bin-$pv.deb"
+dist="$DISTDIR/cider-bin-$pv.deb"
 if [[ -r "$dist" ]] && [[ "$(head -c 7 "$dist")" != '!<arch>' ]]; then
-	echo "downloaded file is not a .deb, removing the ebuild" >&2
-	rm -f "$ebuild" "$PKGDIR/Manifest"; exit 1
+	echo "downloaded file is not a .deb, restoring the previous files" >&2
+	restore; exit 1
 fi
+rm -rf "$bk"
 # Note: the repo's index is empty, so there is no upstream checksum to compare
 # against. The Manifest now pins THIS download's hashes (trust on first use).
 
