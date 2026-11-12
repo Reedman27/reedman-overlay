@@ -16,43 +16,39 @@ KEYWORDS="-* ~amd64"
 RESTRICT="bindist mirror strip"
 
 RDEPEND="
+    app-crypt/libsecret
+    dev-libs/libbsd
     dev-libs/nss
     media-libs/alsa-lib
-    media-libs/libpulse
-    media-libs/mesa
+    media-libs/openal
     net-misc/curl
+    net-print/cups
     sys-apps/dbus
-    virtual/jre:21
+    virtual/opengl
+    x11-apps/xrandr
     x11-libs/gtk+:3
-    x11-libs/libX11
     x11-libs/libXScrnSaver
+    x11-libs/libXcomposite
+    x11-libs/libXcursor
+    x11-libs/libXdamage
+    x11-libs/libXext
+    x11-libs/libXfixes
+    x11-libs/libXi
+    x11-libs/libXrender
     x11-libs/libXtst
-    x11-misc/xdg-utils
+    x11-libs/xcb-util
 "
 BDEPEND="$(unpacker_src_uri_depends)"
 
-QA_PREBUILT="opt/minecraft-launcher/*"
+QA_PREBUILT="usr/bin/minecraft-launcher"
 
 src_unpack() {
     unpacker_src_unpack
 }
 
 src_install() {
-    [[ -d opt/minecraft-launcher ]] || die "unexpected deb layout"
-    insinto /opt
-    doins -r opt/minecraft-launcher
+    dobin usr/bin/minecraft-launcher
 
-    # make the bundled executables executable again
-    local f
-    while IFS= read -r -d '' f; do
-        fperms +x "/${f}"
-    done < <(find opt/minecraft-launcher -type f \
-        \( -name 'minecraft-launcher' -o -name '*.so*' -o -name 'chrome-sandbox' -o -name 'crashpad_handler' \) -print0)
-
-    dosym ../../opt/minecraft-launcher/minecraft-launcher /usr/bin/minecraft-launcher
-
-    if [[ -d usr/share ]]; then
-        insinto /usr/share
-        doins -r usr/share/.
-    fi
+    insinto /usr/share
+    doins -r usr/share/applications usr/share/icons
 }
