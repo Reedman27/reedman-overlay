@@ -7,7 +7,7 @@ on:
 # Forgejo Actions. Adjust `runs-on` to a label your runner provides (the default is `docker`).
 jobs:
   static:
-    runs-on: docker
+    runs-on: ubuntu-latest
     container:
       image: debian:trixie
     steps:
@@ -30,7 +30,7 @@ jobs:
         run: scripts/test-deb.sh
 
   apt-resolution:
-    runs-on: docker
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
