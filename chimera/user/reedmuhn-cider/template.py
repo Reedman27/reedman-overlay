@@ -1,5 +1,5 @@
 pkgname = "reedmuhn-cider"
-pkgver = "1.0.2"
+pkgver = "1.0.3"
 pkgrel = 0
 metapackage = True
 pkgdesc = "ReedMuhn Cider: Apple Music client"

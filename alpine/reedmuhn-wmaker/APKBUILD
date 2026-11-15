@@ -1,6 +1,6 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-wmaker
-pkgver=1.0.2
+pkgver=1.0.3
 pkgrel=0
 pkgdesc="ReedMuhn Window Maker environment"
 url="https://github.com/Reedman27"

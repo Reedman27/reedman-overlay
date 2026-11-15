@@ -48,7 +48,16 @@ case "$family" in
       run "${SUDO[@]}" apt-get update
     fi
     has_app minecraft-launcher-bin && files+=("$(pick 'minecraft-launcher_*.deb')")
-    has_app equibop-bin && files+=("$(pick 'equibop_*_amd64.deb')")
+    # reedmuhn-desktop depends on equibop: use the locally built .deb when present,
+    # otherwise apt fetches it from the configured ReedMuhn repository.
+    if has_meta desktop || has_app equibop-bin; then
+      eq="$(find "$OUT" -maxdepth 1 -type f -name 'equibop_*_amd64.deb' 2>/dev/null | sort -V | tail -n1)"
+      if [[ -n "$eq" ]]; then files+=("$eq")
+      elif has_app equibop-bin; then echo "No equibop .deb in $OUT: build with BUILD_EQUIBOP=1 scripts/build-deb.sh" >&2; exit 1
+      else echo "Note: no local equibop .deb; apt must find 'equibop' in the ReedMuhn repository (scripts/setup-apt-repo.sh)." >&2; fi
+    fi
+    # reedmuhn-gaming depends on steam-installer (official repos), which needs i386 plus contrib/non-free.
+    has_meta gaming && run "${SUDO[@]}" "$HERE/scripts/enable-steam-prereqs.sh"
     run "${SUDO[@]}" apt-get install -y "${files[@]}"
     ;;
   rpm|opensuse)

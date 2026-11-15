@@ -1,10 +1,10 @@
 Package: reedmuhn-gaming
-Version: 1.0.2
+Version: 1.0.3
 Architecture: all
 Section: misc
 Priority: optional
 Maintainer: Reedman27 <packages@reedmuhn.invalid>
-Depends: wine, winetricks
+Depends: wine, winetricks, steam-installer
 Description: ReedMuhn gaming and Windows compatibility
  Metapackage: contains no files, only dependencies.
  .

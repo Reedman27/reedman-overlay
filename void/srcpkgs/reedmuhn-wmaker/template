@@ -1,6 +1,6 @@
 # Template file for 'reedmuhn-wmaker'
 pkgname=reedmuhn-wmaker
-version=1.0.2
+version=1.0.3
 revision=1
 metapackage=yes
 short_desc="ReedMuhn Window Maker environment"

@@ -1,5 +1,5 @@
 pkgname = "reedmuhn-wmaker"
-pkgver = "1.0.2"
+pkgver = "1.0.3"
 pkgrel = 0
 metapackage = True
 pkgdesc = "ReedMuhn Window Maker environment"

@@ -1,11 +1,11 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-desktop
-pkgver=1.0.2
+pkgver=1.0.3
 pkgrel=1
 pkgdesc="ReedMuhn desktop: general graphical applications"
 arch=('any')
 license=('MIT')
-depends=('thunar' 'file-roller' 'alacritty' 'vlc' 'pipewire' 'pipewire-pulse' 'wireplumber' 'pavucontrol' 'playerctl')
+depends=('thunar' 'file-roller' 'alacritty' 'vlc' 'pipewire' 'pipewire-pulse' 'wireplumber' 'pavucontrol' 'playerctl' 'equibop-bin')
 
 package() {
 	install -dm755 "$pkgdir/usr/share/doc/$pkgname"

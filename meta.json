@@ -22,7 +22,8 @@
         "vlc",
         "pipewire",
         "pavucontrol",
-        "playerctl"
+        "playerctl",
+        "equibop"
       ]
     },
     "wmaker": {
@@ -44,7 +45,8 @@
       "summary": "ReedMuhn gaming and Windows compatibility",
       "items": [
         "wine",
-        "winetricks"
+        "winetricks",
+        "steam"
       ]
     },
     "networking": {
@@ -914,6 +916,37 @@
       ],
       "void": [
         "cider-bin"
+      ]
+    },
+    "equibop": {
+      "deb": [
+        "equibop"
+      ],
+      "rpm": [
+        "equibop-bin"
+      ],
+      "opensuse": [
+        "equibop-bin"
+      ],
+      "arch": [
+        "equibop-bin"
+      ],
+      "gentoo": [
+        "net-im/equibop-bin"
+      ],
+      "void": [
+        "equibop-bin"
+      ]
+    },
+    "steam": {
+      "deb": [
+        "steam-installer"
+      ],
+      "arch": [
+        "steam"
+      ],
+      "gentoo": [
+        "games-util/steam-launcher"
       ]
     }
   },

@@ -1,6 +1,6 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-cider
-pkgver=1.0.2
+pkgver=1.0.3
 pkgrel=1
 pkgdesc="ReedMuhn Cider: Apple Music client"
 arch=('any')

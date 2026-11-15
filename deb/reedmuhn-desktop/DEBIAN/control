@@ -1,10 +1,10 @@
 Package: reedmuhn-desktop
-Version: 1.0.2
+Version: 1.0.3
 Architecture: all
 Section: misc
 Priority: optional
 Maintainer: Reedman27 <packages@reedmuhn.invalid>
-Depends: thunar, file-roller, alacritty, vlc, pipewire, pipewire-pulse, wireplumber, pavucontrol, playerctl
+Depends: thunar, file-roller, alacritty, vlc, pipewire, pipewire-pulse, wireplumber, pavucontrol, playerctl, equibop
 Description: ReedMuhn desktop: general graphical applications
  Metapackage: contains no files, only dependencies.
  .

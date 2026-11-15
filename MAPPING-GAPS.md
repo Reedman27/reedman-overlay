@@ -8,11 +8,15 @@ package name that could not be confirmed.
 ## reedmuhn-cider
 - `cider`: chimera, alpine
 
+## reedmuhn-desktop
+- `equibop`: chimera, alpine
+
 ## reedmuhn-development
 - `openjdk`: chimera
 - `build-tools`: chimera
 
 ## reedmuhn-gaming
+- `steam`: rpm, opensuse, chimera, alpine, void
 - `wine`: chimera, alpine
 - `winetricks`: chimera, alpine
 

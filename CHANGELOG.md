@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+- `reedmuhn-desktop` now depends on `equibop` (served from the ReedMuhn APT repository; `bootstrap.sh` uses the local build when present).
+- `reedmuhn-gaming` now depends on `steam-installer` from the official Debian/Devuan repositories (also `steam` on Arch, `games-util/steam-launcher` on Gentoo).
+- New `scripts/enable-steam-prereqs.sh` (i386 + contrib/non-free) and `scripts/setup-apt-repo.sh` (adds the ReedMuhn repo and key).
+- CI builds Equibop and resolves both new dependencies on Debian 13 and Devuan 6.
+
 ## 1.0.2
 - Focus: Debian and Devuan are the supported, tested-first targets. Other families are experimental and untested.
 - Equibop 3.3.4 SHA-256 is now pinned (`EQUIBOP_SHA256`); `build-deb.sh` refuses to build Equibop without a pin.

@@ -131,6 +131,19 @@ sudo xbps-install --repository=hostdir/binpkgs reedmuhn-base reedmuhn-wmaker equ
 
 Build other metapackages by passing their `reedmuhn-*` names. Void templates are native XBPS source packages; they are not `.deb` packages installed directly by XBPS.
 
+## Equibop and Steam through the metapackages (Debian/Devuan)
+
+`reedmuhn-desktop` depends on `equibop` and `reedmuhn-gaming` depends on `steam-installer`, so one `apt install` fetches both:
+
+1. Publish (on your build machine): `BUILD_EQUIBOP=1 scripts/build-deb.sh`, then `FORGEJO_USER=Reedman27 FORGEJO_TOKEN=... scripts/publish-forgejo.sh`. The token needs the `write:package` scope. Forgejo signs the repository itself.
+2. On each Debian/Devuan machine, once (it must be able to reach your Forgejo host): `sudo scripts/setup-apt-repo.sh`
+3. For Steam, once: `sudo scripts/enable-steam-prereqs.sh` (adds i386, contrib and non-free; `bootstrap.sh gaming` does this for you).
+4. `sudo apt install reedmuhn-desktop reedmuhn-gaming`
+
+The repository is Forgejo's Debian package registry: `https://serverhat.tail973a97.ts.net:8443/api/packages/Reedman27/debian`, distribution `reedmuhn`, component `main`. A package version can only be uploaded once, so bump `VERSION` for each republish.
+
+Equibop is amd64 only, so `reedmuhn-desktop` is installable on amd64 only.
+
 ## Host your own package repositories
 
 Build packages first, then generate the native package indexes:
