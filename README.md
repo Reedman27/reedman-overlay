@@ -23,3 +23,18 @@ Installs to `/opt/minecraft-launcher` with a `minecraft-launcher` symlink in `/u
 Mojang's URL is unversioned, so when they ship an update emerge fails the checksum until you run
 `scripts/bump-minecraft.sh` again and push. The game files are downloaded by the launcher into
 `~/.minecraft` on first launch of a version.
+
+## x11-plugins (Window Maker dockapps)
+
+Live (9999) ebuilds for the dockapps in [dockapps-collection](https://github.com/Reedman27/dockapps-collection):
+`x11-plugins/wmvol` (PipeWire volume) and `x11-plugins/wmmedia` (MPRIS/MPD media controls).
+
+    echo "x11-plugins/wmvol **"   >> /etc/portage/package.accept_keywords/dockapps
+    echo "x11-plugins/wmmedia **" >> /etc/portage/package.accept_keywords/dockapps
+    emerge -aq x11-plugins/wmvol x11-plugins/wmmedia
+
+## Debian, Devuan and other distro packaging
+
+The same repository holds the ReedMuhn packaging for other distributions (`deb/`, `arch/`, `rpm/`, `void/`, ...).
+Debian and Devuan are the supported targets. See [docs/reedmuhn.md](docs/reedmuhn.md).
+CI runs on Forgejo Actions (`.forgejo/workflows/validate.yml`).

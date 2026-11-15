@@ -1,1 +1,12 @@
 *.deb
+/out/
+/repo/
+/keys/*
+!/keys/.gitkeep
+*.rpm
+*.pkg.tar.*
+*.xbps
+*.tar.gz
+*.tar.xz
+*.tar.zst
+*.log

@@ -1,0 +1,60 @@
+name: Debian and Devuan package validation
+
+on:
+  push:
+  pull_request:
+
+# Forgejo Actions. Adjust `runs-on` to a label your runner provides (the default is `docker`).
+jobs:
+  static:
+    runs-on: docker
+    container:
+      image: debian:trixie
+    steps:
+      - name: Install tools (checkout needs git and node)
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 dpkg-dev
+      - uses: actions/checkout@v4
+      - name: Validate metadata and shell syntax
+        run: |
+          python3 -m json.tool meta.json >/dev/null
+          bash -n bootstrap.sh scripts/*.sh rpm/*.sh arch/*.sh opensuse/*.sh void/*.sh
+          for f in arch/*/PKGBUILD; do bash -n "$f"; done
+      - name: Verify generated files are current
+        run: |
+          git config --global --add safe.directory "$PWD"
+          python3 scripts/gen.py
+          git diff --exit-code
+      - name: Build and inspect DEB metapackages
+        run: scripts/test-deb.sh
+
+  apt-resolution:
+    runs-on: docker
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["debian:trixie", "devuan/devuan:excalibur"]
+    container:
+      image: ${{ matrix.image }}
+    name: APT dependency resolution (${{ matrix.image }})
+    steps:
+      - name: Prepare apt (enable contrib for winetricks) and install tools
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          for f in /etc/apt/sources.list.d/*.sources; do
+            [ -f "$f" ] && sed -i -E "/^Components:/ { /(^|[[:space:]])contrib([[:space:]]|$)/! s/$/ contrib/; }" "$f"
+          done
+          if [ -f /etc/apt/sources.list ]; then
+            sed -i -E "/^[[:space:]]*deb(-src)?[[:space:]]/ { /[[:space:]]contrib([[:space:]]|$)/! s/[[:space:]]main([[:space:]]|$)/ main contrib/; }" /etc/apt/sources.list
+          fi
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl build-essential dpkg-dev debhelper pkgconf \
+            libx11-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev
+      - uses: actions/checkout@v4
+      - name: Build packages and resolve dependencies
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          scripts/build-deb.sh
+          scripts/check-deps.sh
+          apt-get install -s --no-install-recommends ./out/*.deb
