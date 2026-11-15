@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>packages@reedmuhn.invalid</email>
+		<name>Reedman27</name>
+	</maintainer>
+	<longdescription>ReedMuhn Window Maker environment. Contains no files, only dependencies.</longdescription>
+	<use>
+		<flag name="wm-desktop">Also install x11-misc/wm-desktop</flag>
+	</use>
+</pkgmetadata>

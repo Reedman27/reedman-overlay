@@ -1,0 +1,10 @@
+# Template file for 'reedmuhn-cider'
+pkgname=reedmuhn-cider
+version=1.0.2
+revision=1
+metapackage=yes
+short_desc="ReedMuhn Cider: Apple Music client"
+maintainer="Reedman27 <packages@reedmuhn.invalid>"
+license=MIT
+homepage=https://github.com/Reedman27
+depends="cider-bin"

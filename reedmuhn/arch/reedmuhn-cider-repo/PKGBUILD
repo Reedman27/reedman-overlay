@@ -1,0 +1,20 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-cider-repo
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Cider Collective pacman repository (signing key and pacman.conf entry)"
+arch=('any')
+url="https://cider.sh"
+license=('MIT')
+depends=('pacman')
+makedepends=('gnupg')
+install=reedmuhn-cider-repo.install
+source=('ARCH-GPG-KEY')            # copied in by arch/build.sh from keys/
+sha256sums=('SKIP')                # verified by fingerprint below instead
+
+package() {
+	# refuse to package a key that is not the one Cider documents
+	gpg --show-keys --with-colons "$srcdir/ARCH-GPG-KEY" | grep -q ':A0CD6B993438E22634450CDD2A236C3F42A61682:' \
+		|| { echo "ARCH-GPG-KEY does not contain fingerprint A0CD6B99...1682" >&2; return 1; }
+	install -Dm644 "$srcdir/ARCH-GPG-KEY" "$pkgdir/usr/share/cidercollective/ARCH-GPG-KEY"
+}

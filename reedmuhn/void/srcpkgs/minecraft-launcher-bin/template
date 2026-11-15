@@ -1,0 +1,22 @@
+# Template file for 'minecraft-launcher-bin'
+pkgname=minecraft-launcher-bin
+version=2.1.3
+revision=1
+archs="x86_64"
+short_desc="Official Minecraft Launcher (repacked from Mojang's .deb)"
+maintainer="Reedman27 <packages@reedmuhn.invalid>"
+license="custom:Mojang-EULA"
+homepage="https://www.minecraft.net"
+distfiles="https://launcher.mojang.com/download/Minecraft.deb"
+checksum="SKIP" # Mojang's URL is mutable; refresh the checksum when the upstream package changes.
+hostmakedepends="binutils tar"
+depends="gtk+3 nss alsa-lib libsecret libcurl cups-libs"
+
+do_install() {
+    mkdir -p "${wrksrc}/deb"
+    ar x "${XBPS_SRCDISTDIR}/${pkgname}-${version}/Minecraft.deb" --output="${wrksrc}/deb"
+    local data_archive
+    data_archive=$(find "${wrksrc}/deb" -maxdepth 1 -name 'data.tar.*' -print -quit)
+    mkdir -p "${DESTDIR}"
+    tar -xf "$data_archive" -C "${DESTDIR}"
+}

@@ -1,0 +1,30 @@
+# Mapping gaps (generated)
+
+Items skipped because meta.json has no package name for that distro family.
+Hosted desktop applications are built per package family; all other meta contents come from the
+distro's own repos, so a gap here is software the distro does not ship or a
+package name that could not be confirmed.
+
+## reedmuhn-cider
+- `cider`: chimera, alpine
+
+## reedmuhn-development
+- `openjdk`: chimera
+- `build-tools`: chimera
+
+## reedmuhn-gaming
+- `wine`: chimera, alpine
+- `winetricks`: chimera, alpine
+
+## reedmuhn-networking
+- `tailscale`: deb
+
+## reedmuhn-wmaker
+- `wmmedia`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
+- `wmvol`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
+- `wmclock`: rpm, arch, chimera, alpine
+- `wmmon`: rpm, arch, chimera, alpine
+- `wmsystemtray`: rpm, arch, chimera, alpine
+- `windowmaker`: chimera, alpine
+- `wm-desktop`: chimera, alpine
+- `xorg`: chimera

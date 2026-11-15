@@ -1,0 +1,21 @@
+# Template file for 'cider-bin'
+pkgname=cider-bin
+version=4.0.17
+revision=1
+archs="x86_64"
+short_desc="Cider Apple Music client (upstream Debian binary repackaged)"
+maintainer="Reedman27 <packages@reedmuhn.invalid>"
+license="all-rights-reserved"
+homepage="https://cider.sh"
+distfiles="https://repo.cider.sh/apt/pool/main/cider-v${version}-linux-x64.deb"
+checksum="SKIP" # Generate and pin the checksum before publishing.
+hostmakedepends="binutils tar xz"
+depends="alsa-lib at-spi2-core glib nss dbus-libs cairo gtk+3 pango libX11 libxcb libXcomposite libXdamage libXfixes libXrandr libXScrnSaver libXtst libxkbcommon mesa xdg-utils"
+
+do_install() {
+    ar x "${XBPS_SRCDISTDIR}/${pkgname}-${version}/cider-v${version}-linux-x64.deb" --output="${wrksrc}"
+    local data_archive
+    data_archive=$(find "${wrksrc}" -maxdepth 1 -name 'data.tar.*' -print -quit)
+    mkdir -p "${DESTDIR}"
+    tar -xf "$data_archive" -C "${DESTDIR}"
+}

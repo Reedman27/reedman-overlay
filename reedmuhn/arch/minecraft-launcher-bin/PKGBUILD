@@ -1,0 +1,28 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+# UNTESTED. Unpacks Mojang's .deb so pacman manages the files. The URL is unversioned:
+# when Mojang ships an update, makepkg's source changes under you (checksums are SKIP).
+pkgname=minecraft-launcher-bin
+pkgver=0
+pkgrel=1
+pkgdesc="Official Minecraft Launcher (repackaged from Mojang's .deb)"
+arch=('x86_64')
+url="https://www.minecraft.net"
+license=('custom:Mojang-EULA')
+depends=('gtk3' 'nss' 'alsa-lib' 'openal' 'curl' 'libcups' 'libsecret' 'libbsd' 'libxss' 'libxtst' 'xorg-xrandr')
+makedepends=('binutils')
+options=('!strip')
+noextract=('Minecraft.deb')
+source=("Minecraft.deb::https://launcher.mojang.com/download/Minecraft.deb")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd "$srcdir"
+	local m; m="$(ar t Minecraft.deb | grep '^control\.tar' | head -n1)"
+	ar p Minecraft.deb "$m" | bsdtar -xOf - ./control 2>/dev/null | sed -n 's/^Version: *//p' | sed 's/[^0-9.].*//' | head -n1
+}
+
+package() {
+	cd "$srcdir"
+	ar x Minecraft.deb
+	bsdtar -xf data.tar.* -C "$pkgdir"
+}

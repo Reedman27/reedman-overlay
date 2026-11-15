@@ -1,0 +1,15 @@
+Package: reedmuhn-cider
+Version: 1.0.2
+Architecture: all
+Section: misc
+Priority: optional
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Depends: reedmuhn-cider-repo (>= 1.0)
+Recommends: cider
+Description: ReedMuhn Cider: Apple Music client
+ Metapackage: contains no files, only dependencies.
+ .
+ Dependencies are resolved from the target distribution repositories.
+ Standalone applications are packaged separately and are not pulled in here.
+ .
+ Cider is recommended from its upstream repository when available.

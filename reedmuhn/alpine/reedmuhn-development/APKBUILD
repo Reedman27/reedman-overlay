@@ -1,0 +1,14 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-development
+pkgver=1.0.2
+pkgrel=0
+pkgdesc="ReedMuhn development environment"
+url="https://github.com/Reedman27"
+arch="noarch"
+license="MIT"
+depends="neovim git openjdk21 imagemagick build-base"
+options="!check"
+
+package() {
+	mkdir -p "$pkgdir"
+}

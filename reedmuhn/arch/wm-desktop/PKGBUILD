@@ -1,0 +1,21 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+# UNTESTED. Plain Makefile, WITH_x switches, PREFIX/DESTDIR.
+pkgname=wm-desktop
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Add-ons for Window Maker: notifications, file browser, menus"
+arch=('x86_64')
+url="https://github.com/Reedman27/wm-desktop"
+license=('MIT')
+depends=('libx11' 'libxft' 'fontconfig' 'dbus' 'windowmaker')   # windowmaker ships libwraster
+makedepends=('git' 'pkgconf')
+source=("git+https://github.com/Reedman27/wm-desktop.git")
+sha256sums=('SKIP')
+
+build() {
+	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes
+}
+
+package() {
+	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes DESTDIR="$pkgdir" install
+}

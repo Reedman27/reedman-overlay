@@ -1,0 +1,9 @@
+pkgname = "reedmuhn-networking"
+pkgver = "1.0.2"
+pkgrel = 0
+metapackage = True
+pkgdesc = "ReedMuhn networking and self-hosting"
+maintainer = "Reedman27 <packages@reedmuhn.invalid>"
+license = "MIT"
+url = "https://github.com/Reedman27"
+depends = ["networkmanager", "tailscale", "samba", "podman", "chrony"]

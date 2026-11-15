@@ -1,0 +1,9 @@
+pkgname = "reedmuhn-cider"
+pkgver = "1.0.2"
+pkgrel = 0
+metapackage = True
+pkgdesc = "ReedMuhn Cider: Apple Music client"
+maintainer = "Reedman27 <packages@reedmuhn.invalid>"
+license = "MIT"
+url = "https://github.com/Reedman27"
+depends = []

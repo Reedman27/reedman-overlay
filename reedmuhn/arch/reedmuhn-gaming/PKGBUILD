@@ -1,0 +1,13 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-gaming
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="ReedMuhn gaming and Windows compatibility"
+arch=('any')
+license=('MIT')
+depends=('wine' 'winetricks')
+
+package() {
+	install -dm755 "$pkgdir/usr/share/doc/$pkgname"
+	echo "$pkgname $pkgver" > "$pkgdir/usr/share/doc/$pkgname/VERSION"
+}

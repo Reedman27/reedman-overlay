@@ -1,0 +1,11 @@
+Package: reedmuhn-cider-repo
+Version: @VERSION@
+Architecture: all
+Section: misc
+Priority: optional
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Homepage: https://cider.sh
+Description: Cider Collective apt repository (source entry and signing key)
+ Installs the official Cider apt source and its signing key, using the same
+ paths as Cider's own instructions, so nothing ends up configured twice.
+ A valid Cider licence is still needed to use the app.

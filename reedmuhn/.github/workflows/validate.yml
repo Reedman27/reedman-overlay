@@ -1,0 +1,57 @@
+name: Debian and Devuan package validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Validate metadata and shell syntax
+        run: |
+          python3 -m json.tool meta.json >/dev/null
+          bash -n bootstrap.sh scripts/*.sh rpm/*.sh arch/*.sh opensuse/*.sh void/*.sh
+          for f in arch/*/PKGBUILD; do bash -n "$f"; done
+      - name: Verify generated files are current
+        run: |
+          python3 scripts/gen.py
+          git diff --exit-code
+      - name: Build and inspect DEB metapackages
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev && scripts/test-deb.sh
+
+  apt-resolution:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - distro: Debian 13 (Trixie)
+            image: debian:trixie
+          - distro: Devuan 6 (Excalibur)
+            image: devuan/devuan:excalibur
+    name: APT dependency resolution - ${{ matrix.distro }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build packages and resolve dependencies in target distro
+        run: |
+          docker run --rm -v "$GITHUB_WORKSPACE:/src" -w /src "${{ matrix.image }}" bash -ec '
+            export DEBIAN_FRONTEND=noninteractive
+            # Winetricks is in contrib on Debian-family repositories.
+            for f in /etc/apt/sources.list.d/*.sources; do
+              [ -f "$f" ] && sed -i -E "/^Components:/ { /(^|[[:space:]])contrib([[:space:]]|$)/! s/$/ contrib/; }" "$f"
+            done
+            if [ -f /etc/apt/sources.list ]; then
+              sed -i -E "/^[[:space:]]*deb(-src)?[[:space:]]/ { /[[:space:]]contrib([[:space:]]|$)/! s/[[:space:]]main([[:space:]]|$)/ main contrib/; }" /etc/apt/sources.list
+            fi
+            apt-get update
+            apt-get install -y python3 build-essential dpkg-dev debhelper git curl ca-certificates pkgconf \
+              libx11-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev
+            scripts/build-deb.sh
+            # Resolve every core metapackage and the separately built wm-desktop package.
+            apt-get install -s --no-install-recommends ./out/*.deb
+          '

@@ -1,0 +1,26 @@
+_fpr=A0CD6B993438E22634450CDD2A236C3F42A61682
+
+post_install() {
+	pacman-key --add /usr/share/cidercollective/ARCH-GPG-KEY
+	pacman-key --lsign-key "$_fpr"
+	if ! grep -q '^\[cidercollective\]' /etc/pacman.conf; then
+		cat >> /etc/pacman.conf <<'CONF'
+
+# BEGIN reedmuhn-cider-repo
+# Cider Collective Repository
+[cidercollective]
+SigLevel = Required TrustedOnly
+Server = https://repo.cider.sh/arch
+# END reedmuhn-cider-repo
+CONF
+	fi
+	echo ">>> Cider repo added. Run: pacman -Syu"
+}
+
+post_upgrade() {
+	post_install
+}
+
+pre_remove() {
+	sed -i '/^# BEGIN reedmuhn-cider-repo$/,/^# END reedmuhn-cider-repo$/d' /etc/pacman.conf
+}

@@ -1,0 +1,14 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-networking
+pkgver=1.0.2
+pkgrel=0
+pkgdesc="ReedMuhn networking and self-hosting"
+url="https://github.com/Reedman27"
+arch="noarch"
+license="MIT"
+depends="networkmanager tailscale samba podman chrony"
+options="!check"
+
+package() {
+	mkdir -p "$pkgdir"
+}

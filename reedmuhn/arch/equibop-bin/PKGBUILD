@@ -1,0 +1,19 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=equibop-bin
+pkgver=3.3.4
+pkgrel=1
+pkgdesc='Custom Discord client with Equicord preinstalled'
+arch=('x86_64')
+url='https://github.com/Equicord/Equibop'
+license=('GPL-3.0-only')
+depends=('alsa-lib' 'at-spi2-core' 'cairo' 'cups' 'expat' 'libdrm' 'libxext' 'libxss' 'libxshmfence' 'libsecret' 'dbus' 'glib2' 'gtk3' 'nss' 'pango' 'libx11' 'libxcb' 'libxcomposite' 'libxdamage' 'libxfixes' 'libxrandr' 'libxss' 'libxtst' 'libxkbcommon' 'mesa' 'xdg-utils')
+source=("https://github.com/Equicord/Equibop/releases/download/v${pkgver}/equibop_${pkgver}_amd64.deb")
+sha256sums=('SKIP') # Replace with the verified upstream SHA-256 before publishing.
+
+package() {
+  cd "$srcdir"
+  ar x "equibop_${pkgver}_amd64.deb"
+  local data_archive
+  data_archive=$(find . -maxdepth 1 -name 'data.tar.*' -print -quit)
+  bsdtar -xf "$data_archive" -C "$pkgdir"
+}

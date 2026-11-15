@@ -1,0 +1,10 @@
+# Template file for 'reedmuhn-base'
+pkgname=reedmuhn-base
+version=1.0.2
+revision=1
+metapackage=yes
+short_desc="ReedMuhn base: command-line environment"
+maintainer="Reedman27 <packages@reedmuhn.invalid>"
+license=MIT
+homepage=https://github.com/Reedman27
+depends="zsh fastfetch tmux opendoas btop git"

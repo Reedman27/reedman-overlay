@@ -1,0 +1,14 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-desktop
+pkgver=1.0.2
+pkgrel=0
+pkgdesc="ReedMuhn desktop: general graphical applications"
+url="https://github.com/Reedman27"
+arch="noarch"
+license="MIT"
+depends="thunar file-roller alacritty vlc pipewire pipewire-pulse wireplumber pavucontrol playerctl"
+options="!check"
+
+package() {
+	mkdir -p "$pkgdir"
+}

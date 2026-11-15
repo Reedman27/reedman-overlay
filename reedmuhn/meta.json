@@ -1,0 +1,926 @@
+{
+  "maintainer": "Reedman27 <packages@reedmuhn.invalid>",
+  "homepage": "https://github.com/Reedman27",
+  "metas": {
+    "base": {
+      "summary": "ReedMuhn base: command-line environment",
+      "items": [
+        "zsh",
+        "fastfetch",
+        "tmux",
+        "doas",
+        "btop",
+        "git"
+      ]
+    },
+    "desktop": {
+      "summary": "ReedMuhn desktop: general graphical applications",
+      "items": [
+        "thunar",
+        "file-roller",
+        "alacritty",
+        "vlc",
+        "pipewire",
+        "pavucontrol",
+        "playerctl"
+      ]
+    },
+    "wmaker": {
+      "summary": "ReedMuhn Window Maker environment",
+      "items": [
+        "windowmaker",
+        "wm-desktop",
+        "picom",
+        "sxhkd",
+        "wmclock",
+        "wmmon",
+        "wmmedia",
+        "wmvol",
+        "wmsystemtray",
+        "xorg"
+      ]
+    },
+    "gaming": {
+      "summary": "ReedMuhn gaming and Windows compatibility",
+      "items": [
+        "wine",
+        "winetricks"
+      ]
+    },
+    "networking": {
+      "summary": "ReedMuhn networking and self-hosting",
+      "items": [
+        "networkmanager",
+        "tailscale",
+        "samba",
+        "podman",
+        "chrony"
+      ]
+    },
+    "development": {
+      "summary": "ReedMuhn development environment",
+      "items": [
+        "neovim",
+        "git",
+        "openjdk",
+        "imagemagick",
+        "build-tools"
+      ]
+    },
+    "cider": {
+      "summary": "ReedMuhn Cider: Apple Music client",
+      "needs_repo": [
+        "deb",
+        "rpm",
+        "arch"
+      ],
+      "items": [
+        "cider"
+      ]
+    }
+  },
+  "gentoo_use": [
+    "wm-desktop"
+  ],
+  "soft": {
+    "deb": [
+      "cider"
+    ]
+  },
+  "map": {
+    "zsh": {
+      "deb": [
+        "zsh"
+      ],
+      "rpm": [
+        "zsh"
+      ],
+      "arch": [
+        "zsh"
+      ],
+      "gentoo": [
+        "app-shells/zsh"
+      ],
+      "chimera": [
+        "zsh"
+      ],
+      "alpine": [
+        "zsh"
+      ],
+      "opensuse": [
+        "zsh"
+      ],
+      "void": [
+        "zsh"
+      ]
+    },
+    "fastfetch": {
+      "deb": [
+        "fastfetch"
+      ],
+      "rpm": [
+        "fastfetch"
+      ],
+      "arch": [
+        "fastfetch"
+      ],
+      "gentoo": [
+        "app-misc/fastfetch"
+      ],
+      "chimera": [
+        "fastfetch"
+      ],
+      "alpine": [
+        "fastfetch"
+      ],
+      "opensuse": [
+        "fastfetch"
+      ],
+      "void": [
+        "fastfetch"
+      ]
+    },
+    "tmux": {
+      "deb": [
+        "tmux"
+      ],
+      "rpm": [
+        "tmux"
+      ],
+      "arch": [
+        "tmux"
+      ],
+      "gentoo": [
+        "app-misc/tmux"
+      ],
+      "chimera": [
+        "tmux"
+      ],
+      "alpine": [
+        "tmux"
+      ],
+      "opensuse": [
+        "tmux"
+      ],
+      "void": [
+        "tmux"
+      ]
+    },
+    "doas": {
+      "deb": [
+        "opendoas"
+      ],
+      "rpm": [
+        "opendoas"
+      ],
+      "arch": [
+        "opendoas"
+      ],
+      "gentoo": [
+        "app-admin/doas"
+      ],
+      "chimera": [
+        "doas"
+      ],
+      "alpine": [
+        "doas"
+      ],
+      "opensuse": [
+        "opendoas"
+      ],
+      "void": [
+        "opendoas"
+      ]
+    },
+    "btop": {
+      "deb": [
+        "btop"
+      ],
+      "rpm": [
+        "btop"
+      ],
+      "arch": [
+        "btop"
+      ],
+      "gentoo": [
+        "sys-process/btop"
+      ],
+      "chimera": [
+        "btop"
+      ],
+      "alpine": [
+        "btop"
+      ],
+      "opensuse": [
+        "btop"
+      ],
+      "void": [
+        "btop"
+      ]
+    },
+    "git": {
+      "deb": [
+        "git"
+      ],
+      "rpm": [
+        "git"
+      ],
+      "arch": [
+        "git"
+      ],
+      "gentoo": [
+        "dev-vcs/git"
+      ],
+      "chimera": [
+        "git"
+      ],
+      "alpine": [
+        "git"
+      ],
+      "opensuse": [
+        "git"
+      ],
+      "void": [
+        "git"
+      ]
+    },
+    "librewolf": {},
+    "waterfox": {},
+    "thunar": {
+      "deb": [
+        "thunar"
+      ],
+      "rpm": [
+        "Thunar"
+      ],
+      "arch": [
+        "thunar"
+      ],
+      "gentoo": [
+        "xfce-base/thunar"
+      ],
+      "chimera": [
+        "thunar"
+      ],
+      "alpine": [
+        "thunar"
+      ],
+      "opensuse": [
+        "Thunar"
+      ],
+      "void": [
+        "thunar"
+      ]
+    },
+    "file-roller": {
+      "deb": [
+        "file-roller"
+      ],
+      "rpm": [
+        "file-roller"
+      ],
+      "arch": [
+        "file-roller"
+      ],
+      "gentoo": [
+        "app-arch/file-roller"
+      ],
+      "chimera": [
+        "file-roller"
+      ],
+      "alpine": [
+        "file-roller"
+      ],
+      "opensuse": [
+        "file-roller"
+      ],
+      "void": [
+        "file-roller"
+      ]
+    },
+    "alacritty": {
+      "deb": [
+        "alacritty"
+      ],
+      "rpm": [
+        "alacritty"
+      ],
+      "arch": [
+        "alacritty"
+      ],
+      "gentoo": [
+        "x11-terms/alacritty"
+      ],
+      "chimera": [
+        "alacritty"
+      ],
+      "alpine": [
+        "alacritty"
+      ],
+      "opensuse": [
+        "alacritty"
+      ],
+      "void": [
+        "alacritty"
+      ]
+    },
+    "vlc": {
+      "deb": [
+        "vlc"
+      ],
+      "rpm": [
+        "vlc"
+      ],
+      "arch": [
+        "vlc"
+      ],
+      "gentoo": [
+        "media-video/vlc"
+      ],
+      "chimera": [
+        "vlc"
+      ],
+      "alpine": [
+        "vlc"
+      ],
+      "opensuse": [
+        "vlc"
+      ],
+      "void": [
+        "vlc"
+      ]
+    },
+    "pipewire": {
+      "deb": [
+        "pipewire",
+        "pipewire-pulse",
+        "wireplumber"
+      ],
+      "rpm": [
+        "pipewire",
+        "pipewire-pulseaudio",
+        "wireplumber"
+      ],
+      "arch": [
+        "pipewire",
+        "pipewire-pulse",
+        "wireplumber"
+      ],
+      "gentoo": [
+        "media-video/pipewire",
+        "media-video/wireplumber"
+      ],
+      "chimera": [
+        "pipewire",
+        "wireplumber"
+      ],
+      "alpine": [
+        "pipewire",
+        "pipewire-pulse",
+        "wireplumber"
+      ],
+      "opensuse": [
+        "pipewire",
+        "pipewire-pulseaudio",
+        "wireplumber"
+      ],
+      "void": [
+        "pipewire",
+        "wireplumber"
+      ]
+    },
+    "pavucontrol": {
+      "deb": [
+        "pavucontrol"
+      ],
+      "rpm": [
+        "pavucontrol"
+      ],
+      "arch": [
+        "pavucontrol"
+      ],
+      "gentoo": [
+        "media-sound/pavucontrol"
+      ],
+      "chimera": [
+        "pavucontrol"
+      ],
+      "alpine": [
+        "pavucontrol"
+      ],
+      "opensuse": [
+        "pavucontrol"
+      ],
+      "void": [
+        "pavucontrol"
+      ]
+    },
+    "playerctl": {
+      "deb": [
+        "playerctl"
+      ],
+      "rpm": [
+        "playerctl"
+      ],
+      "arch": [
+        "playerctl"
+      ],
+      "gentoo": [
+        "media-sound/playerctl"
+      ],
+      "chimera": [
+        "playerctl"
+      ],
+      "alpine": [
+        "playerctl"
+      ],
+      "opensuse": [
+        "playerctl"
+      ],
+      "void": [
+        "playerctl"
+      ]
+    },
+    "windowmaker": {
+      "deb": [
+        "wmaker"
+      ],
+      "rpm": [
+        "WindowMaker"
+      ],
+      "arch": [
+        "windowmaker"
+      ],
+      "gentoo": [
+        "x11-wm/windowmaker"
+      ],
+      "opensuse": [
+        "WindowMaker"
+      ],
+      "void": [
+        "WindowMaker"
+      ]
+    },
+    "wm-desktop": {
+      "deb": [
+        "wm-desktop"
+      ],
+      "rpm": [
+        "wm-desktop"
+      ],
+      "arch": [
+        "wm-desktop"
+      ],
+      "gentoo": [
+        "x11-misc/wm-desktop"
+      ],
+      "opensuse": [
+        "wm-desktop"
+      ],
+      "void": [
+        "wm-desktop"
+      ]
+    },
+    "picom": {
+      "deb": [
+        "picom"
+      ],
+      "rpm": [
+        "picom"
+      ],
+      "arch": [
+        "picom"
+      ],
+      "gentoo": [
+        "x11-misc/picom"
+      ],
+      "chimera": [
+        "picom"
+      ],
+      "alpine": [
+        "picom"
+      ],
+      "opensuse": [
+        "picom"
+      ],
+      "void": [
+        "picom"
+      ]
+    },
+    "sxhkd": {
+      "deb": [
+        "sxhkd"
+      ],
+      "rpm": [
+        "sxhkd"
+      ],
+      "arch": [
+        "sxhkd"
+      ],
+      "gentoo": [
+        "x11-misc/sxhkd"
+      ],
+      "chimera": [
+        "sxhkd"
+      ],
+      "alpine": [
+        "sxhkd"
+      ],
+      "opensuse": [
+        "sxhkd"
+      ],
+      "void": [
+        "sxhkd"
+      ]
+    },
+    "wmclock": {
+      "deb": [
+        "wmclock"
+      ],
+      "gentoo": [
+        "x11-plugins/wmclock"
+      ],
+      "opensuse": [
+        "wmclock"
+      ],
+      "void": [
+        "wmclock"
+      ]
+    },
+    "wmmon": {
+      "deb": [
+        "wmmon"
+      ],
+      "gentoo": [
+        "x11-plugins/wmmon"
+      ],
+      "opensuse": [
+        "wmmon"
+      ],
+      "void": [
+        "wmmon"
+      ]
+    },
+    "wmmedia": {},
+    "wmvol": {},
+    "wmsystemtray": {
+      "deb": [
+        "wmsystemtray"
+      ],
+      "gentoo": [
+        "x11-plugins/wmsystemtray"
+      ],
+      "opensuse": [
+        "wmsystemtray"
+      ],
+      "void": [
+        "wmsystemtray"
+      ]
+    },
+    "xorg": {
+      "deb": [
+        "xorg"
+      ],
+      "rpm": [
+        "xorg-x11-server-Xorg",
+        "xorg-x11-xinit"
+      ],
+      "arch": [
+        "xorg-server",
+        "xorg-xinit"
+      ],
+      "gentoo": [
+        "x11-base/xorg-server",
+        "x11-apps/xinit"
+      ],
+      "alpine": [
+        "xorg-server",
+        "xinit"
+      ],
+      "opensuse": [
+        "xorg-x11-server",
+        "xinit"
+      ],
+      "void": [
+        "xorg-server",
+        "xinit"
+      ]
+    },
+    "wine": {
+      "deb": [
+        "wine"
+      ],
+      "rpm": [
+        "wine"
+      ],
+      "arch": [
+        "wine"
+      ],
+      "gentoo": [
+        "virtual/wine"
+      ],
+      "opensuse": [
+        "wine"
+      ],
+      "void": [
+        "wine"
+      ]
+    },
+    "winetricks": {
+      "deb": [
+        "winetricks"
+      ],
+      "rpm": [
+        "winetricks"
+      ],
+      "arch": [
+        "winetricks"
+      ],
+      "gentoo": [
+        "app-emulation/winetricks"
+      ],
+      "opensuse": [
+        "winetricks"
+      ],
+      "void": [
+        "winetricks"
+      ]
+    },
+    "minecraft-launcher": {
+      "deb": [
+        "minecraft-launcher"
+      ],
+      "rpm": [
+        "minecraft-launcher-bin"
+      ],
+      "arch": [
+        "minecraft-launcher-bin"
+      ],
+      "gentoo": [
+        "games-action/minecraft-launcher-bin"
+      ],
+      "opensuse": [
+        "minecraft-launcher-bin"
+      ],
+      "void": [
+        "minecraft-launcher-bin"
+      ]
+    },
+    "networkmanager": {
+      "deb": [
+        "network-manager"
+      ],
+      "rpm": [
+        "NetworkManager"
+      ],
+      "arch": [
+        "networkmanager"
+      ],
+      "gentoo": [
+        "net-misc/networkmanager"
+      ],
+      "chimera": [
+        "networkmanager"
+      ],
+      "alpine": [
+        "networkmanager"
+      ],
+      "opensuse": [
+        "NetworkManager"
+      ],
+      "void": [
+        "NetworkManager"
+      ]
+    },
+    "tailscale": {
+      "rpm": [
+        "tailscale"
+      ],
+      "arch": [
+        "tailscale"
+      ],
+      "gentoo": [
+        "net-vpn/tailscale"
+      ],
+      "chimera": [
+        "tailscale"
+      ],
+      "alpine": [
+        "tailscale"
+      ],
+      "opensuse": [
+        "tailscale"
+      ],
+      "void": [
+        "tailscale"
+      ]
+    },
+    "samba": {
+      "deb": [
+        "samba"
+      ],
+      "rpm": [
+        "samba"
+      ],
+      "arch": [
+        "samba"
+      ],
+      "gentoo": [
+        "net-fs/samba"
+      ],
+      "chimera": [
+        "samba"
+      ],
+      "alpine": [
+        "samba"
+      ],
+      "opensuse": [
+        "samba"
+      ],
+      "void": [
+        "samba"
+      ]
+    },
+    "podman": {
+      "deb": [
+        "podman"
+      ],
+      "rpm": [
+        "podman"
+      ],
+      "arch": [
+        "podman"
+      ],
+      "gentoo": [
+        "app-containers/podman"
+      ],
+      "chimera": [
+        "podman"
+      ],
+      "alpine": [
+        "podman"
+      ],
+      "opensuse": [
+        "podman"
+      ],
+      "void": [
+        "podman"
+      ]
+    },
+    "chrony": {
+      "deb": [
+        "chrony"
+      ],
+      "rpm": [
+        "chrony"
+      ],
+      "arch": [
+        "chrony"
+      ],
+      "gentoo": [
+        "net-misc/chrony"
+      ],
+      "chimera": [
+        "chrony"
+      ],
+      "alpine": [
+        "chrony"
+      ],
+      "opensuse": [
+        "chrony"
+      ],
+      "void": [
+        "chrony"
+      ]
+    },
+    "neovim": {
+      "deb": [
+        "neovim"
+      ],
+      "rpm": [
+        "neovim"
+      ],
+      "arch": [
+        "neovim"
+      ],
+      "gentoo": [
+        "app-editors/neovim"
+      ],
+      "chimera": [
+        "neovim"
+      ],
+      "alpine": [
+        "neovim"
+      ],
+      "opensuse": [
+        "neovim"
+      ],
+      "void": [
+        "neovim"
+      ]
+    },
+    "openjdk": {
+      "deb": [
+        "default-jdk"
+      ],
+      "rpm": [
+        "java-latest-openjdk-devel"
+      ],
+      "arch": [
+        "jdk-openjdk"
+      ],
+      "gentoo": [
+        "virtual/jdk"
+      ],
+      "alpine": [
+        "openjdk21"
+      ],
+      "opensuse": [
+        "java-21-openjdk-devel"
+      ],
+      "void": [
+        "openjdk21"
+      ]
+    },
+    "imagemagick": {
+      "deb": [
+        "imagemagick"
+      ],
+      "rpm": [
+        "ImageMagick"
+      ],
+      "arch": [
+        "imagemagick"
+      ],
+      "gentoo": [
+        "media-gfx/imagemagick"
+      ],
+      "chimera": [
+        "imagemagick"
+      ],
+      "alpine": [
+        "imagemagick"
+      ],
+      "opensuse": [
+        "ImageMagick"
+      ],
+      "void": [
+        "ImageMagick"
+      ]
+    },
+    "build-tools": {
+      "deb": [
+        "build-essential"
+      ],
+      "rpm": [
+        "gcc",
+        "gcc-c++",
+        "make"
+      ],
+      "arch": [
+        "base-devel"
+      ],
+      "gentoo": [
+        "sys-devel/gcc",
+        "dev-build/make"
+      ],
+      "alpine": [
+        "build-base"
+      ],
+      "opensuse": [
+        "gcc",
+        "gcc-c++",
+        "make"
+      ],
+      "void": [
+        "base-devel"
+      ]
+    },
+    "cider": {
+      "deb": [
+        "cider"
+      ],
+      "rpm": [
+        "Cider"
+      ],
+      "arch": [
+        "cider"
+      ],
+      "gentoo": [
+        "media-sound/cider-bin"
+      ],
+      "opensuse": [
+        "cider-bin"
+      ],
+      "void": [
+        "cider-bin"
+      ]
+    }
+  },
+  "hosted_packages": [
+    "wm-desktop",
+    "minecraft-launcher-bin",
+    "cider-bin",
+    "equibop-bin"
+  ]
+}

@@ -1,0 +1,14 @@
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+pkgname=reedmuhn-wmaker
+pkgver=1.0.2
+pkgrel=0
+pkgdesc="ReedMuhn Window Maker environment"
+url="https://github.com/Reedman27"
+arch="noarch"
+license="MIT"
+depends="picom sxhkd xorg-server xinit"
+options="!check"
+
+package() {
+	mkdir -p "$pkgdir"
+}

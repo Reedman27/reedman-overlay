@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+# wm-desktop is a plain Makefile: PREFIX/DESTDIR and WITH_x=yes|no switches
+MK = PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build -- $(MK)
+
+override_dh_auto_install:
+	dh_auto_install -- $(MK)
+
+# tests need Xvfb and a private D-Bus; run them with: make check
+override_dh_auto_test:

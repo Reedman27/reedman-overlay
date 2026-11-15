@@ -1,0 +1,12 @@
+Package: reedmuhn-networking
+Version: 1.0.2
+Architecture: all
+Section: misc
+Priority: optional
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Depends: network-manager, samba, podman, chrony
+Description: ReedMuhn networking and self-hosting
+ Metapackage: contains no files, only dependencies.
+ .
+ Dependencies are resolved from the target distribution repositories.
+ Standalone applications are packaged separately and are not pulled in here.
