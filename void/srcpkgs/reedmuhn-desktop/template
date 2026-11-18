@@ -1,6 +1,6 @@
 # Template file for 'reedmuhn-desktop'
 pkgname=reedmuhn-desktop
-version=1.0.3
+version=1.0.4
 revision=1
 metapackage=yes
 short_desc="ReedMuhn desktop: general graphical applications"

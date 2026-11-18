@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+- New Forgejo workflow `update-equibop.yml` (every 4 hours and on demand): checks for a newer Equibop release, publishes the amd64 `.deb` to the registry, and commits the new pin. Needs the `FORGEJO_TOKEN` repository secret (`write:package`).
+- `scripts/update-equibop.sh` skips the download when already current, can copy the `.deb` to `EQUIBOP_ARTIFACT_DIR`, honours `EQUIBOP_SKIP_GENTOO=1`, and no longer writes broken quoting into the generated Gentoo ebuild.
+- Docs: metapackage table now lists Equibop and Steam; Debian/Devuan build-dependency lists include `python3`, `curl` and `libxext-dev`.
+
+## 1.0.4
+- Debian/Devuan: `wmvol` and `wmmedia` now have native packages built from `dockapps-collection` (`deb/hosted/`), so `reedmuhn-wmaker` includes them. Gentoo mappings added for the existing ebuilds.
+- Hosted source builds are now pinnable: `WM_DESKTOP_REF` and `DOCKAPPS_REF` (set with `scripts/update-pins.sh`). Package versions are stamped `<base>+git<date>.<sha>-1`, so different upstream code never reuses a version. Unpinned builds still work but warn.
+- `bootstrap.sh`, `check-deps.sh` and CI updated for the new packages; docs synchronised (Equibop/Steam are metapackage dependencies, audit document brought up to 1.0.4).
+
 ## 1.0.3
 - `reedmuhn-desktop` now depends on `equibop` (served from the ReedMuhn APT repository; `bootstrap.sh` uses the local build when present).
 - `reedmuhn-gaming` now depends on `steam-installer` from the official Debian/Devuan repositories (also `steam` on Arch, `games-util/steam-launcher` on Gentoo).

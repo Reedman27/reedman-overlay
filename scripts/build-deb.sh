@@ -10,17 +10,69 @@ python3 "$HERE/scripts/gen.py" >/dev/null
 W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
 mkdir -p "$HERE/out"
 # Drop stale core artifacts so old versions or an old opt-in Cider package cannot enter this build.
-rm -f "$HERE"/out/reedmuhn-*_all.deb "$HERE"/out/wm-desktop_*.deb
+rm -f "$HERE"/out/reedmuhn-*_all.deb "$HERE"/out/wm-desktop_*.deb "$HERE"/out/wmvol_*.deb "$HERE"/out/wmmedia_*.deb
+
+# ---- hosted source builds: wm-desktop, wmvol, wmmedia ----
+# Sources are fetched at the commit pinned in WM_DESKTOP_REF / DOCKAPPS_REF (or the env var of the
+# same name). With no pin the newest commit is used and a warning is printed. Either way the Debian
+# version carries the upstream commit date and short hash (<base>+git<date>.<sha>-1), so different
+# upstream code can never be published under the same package version.
+pin() { # <env value> <file>  -> pinned ref, or empty
+  if [[ -n "${1:-}" ]]; then printf '%s' "$1"; return; fi
+  [[ -f "$2" ]] && grep -v '^[[:space:]]*#' "$2" | tr -d '[:space:]' || true
+}
+fetch_pinned() { # <url> <ref> <dest>
+  local url="$1" ref="$2" dest="$3"
+  git init -q "$dest"; git -C "$dest" remote add origin "$url"
+  git -C "$dest" fetch -q --depth 1 origin "${ref:-HEAD}"
+  git -C "$dest" checkout -q --detach FETCH_HEAD
+}
+stamp_changelog() { # <pkg> <source dir> <git dir or empty>
+  local pkg="$1" dir="$2" gd="${3:-}" tmpl="$HERE/deb/hosted/$1/debian" base maint ver date sha
+  base="$(sed -n '1s/^[^(]*(\([^)+-]*\).*/\1/p' "$tmpl/changelog")"
+  maint="$(sed -n 's/^Maintainer: //p' "$tmpl/control" | head -n1)"
+  ver="${base}-1"
+  if [[ -n "$gd" ]] && sha="$(git -C "$gd" rev-parse --short=7 HEAD 2>/dev/null)"; then
+    date="$(git -C "$gd" log -1 --format=%cd --date=format:%Y%m%d)"
+    ver="${base}+git${date}.${sha}-1"
+  fi
+  rm -rf "$dir/debian"; cp -a "$tmpl" "$dir/debian"
+  printf '%s (%s) unstable; urgency=medium\n\n  * Automated build of upstream commit %s.\n\n -- %s  %s\n' \
+    "$pkg" "$ver" "${sha:-unknown}" "$maint" "$(date -R)" > "$dir/debian/changelog"
+  echo "$pkg $ver" >&2
+}
 
 # wm-desktop is a separate project and is required by reedmuhn-wmaker.
 if [[ -z "${SKIP_WM_DESKTOP:-}" ]]; then
-  src="$W/wm-desktop"
-  if [[ -n "${WM_DESKTOP_SRC:-}" ]]; then cp -a "$WM_DESKTOP_SRC" "$src"
-  else git clone --depth 1 "${WM_DESKTOP_URL:-https://github.com/Reedman27/wm-desktop.git}" "$src"; fi
-  rm -rf "$src/debian"
-  cp -a "$HERE/deb/hosted/wm-desktop/debian" "$src/debian"
+  src="$W/wm-desktop"; gd=""
+  if [[ -n "${WM_DESKTOP_SRC:-}" ]]; then
+    cp -a "$WM_DESKTOP_SRC" "$src"; [[ -d "$src/.git" ]] && gd="$src"
+  else
+    ref="$(pin "${WM_DESKTOP_REF:-}" "$HERE/WM_DESKTOP_REF")"
+    [[ -n "$ref" ]] || echo "WARNING: WM_DESKTOP_REF is not pinned; building the newest upstream commit." >&2
+    fetch_pinned "${WM_DESKTOP_URL:-https://github.com/Reedman27/wm-desktop.git}" "$ref" "$src"; gd="$src"
+  fi
+  stamp_changelog wm-desktop "$src" "$gd"
   ( cd "$src" && dpkg-buildpackage -us -uc -b )
   cp "$W"/wm-desktop_*.deb "$HERE/out/"
+fi
+
+# wmvol and wmmedia are dockapps from one shared repository (same layout as the Gentoo ebuilds).
+if [[ -z "${SKIP_DOCKAPPS:-}" ]]; then
+  da="$W/dockapps-collection"; gd=""
+  if [[ -n "${DOCKAPPS_SRC:-}" ]]; then
+    cp -a "$DOCKAPPS_SRC" "$da"; [[ -d "$da/.git" ]] && gd="$da"
+  else
+    ref="$(pin "${DOCKAPPS_REF:-}" "$HERE/DOCKAPPS_REF")"
+    [[ -n "$ref" ]] || echo "WARNING: DOCKAPPS_REF is not pinned; building the newest upstream commit." >&2
+    fetch_pinned "${DOCKAPPS_URL:-https://github.com/Reedman27/dockapps-collection.git}" "$ref" "$da"; gd="$da"
+  fi
+  for app in wmvol wmmedia; do
+    cp -a "$da/$app" "$W/$app"
+    stamp_changelog "$app" "$W/$app" "$gd"
+    ( cd "$W/$app" && dpkg-buildpackage -us -uc -b )
+    cp "$W"/${app}_*.deb "$HERE/out/"
+  done
 fi
 
 # Minecraft Launcher is a standalone package; never a gaming metapackage dependency.

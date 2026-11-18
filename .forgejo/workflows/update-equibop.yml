@@ -1,0 +1,54 @@
+name: Update Equibop
+
+on:
+  schedule:
+    - cron: '23 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-equibop:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie-slim
+    steps:
+      - name: Install small set of tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ca-certificates curl git nodejs dpkg
+
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check upstream and publish only when newer
+        env:
+          FORGEJO_USER: Reedman27
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          old_version="$(cat EQUIBOP_VERSION)"
+          rm -f out/*.deb 2>/dev/null || true
+
+          EQUIBOP_SKIP_GENTOO=1 EQUIBOP_ARTIFACT_DIR="$PWD/out" scripts/update-equibop.sh
+          new_version="$(cat EQUIBOP_VERSION)"
+
+          if [[ "$new_version" == "$old_version" ]]; then
+            echo "Equibop is already current ($new_version); nothing to publish."
+            exit 0
+          fi
+
+          deb="out/equibop_${new_version}_amd64.deb"
+          test -s "$deb"
+          [[ "$(dpkg-deb -f "$deb" Architecture)" == "amd64" ]]
+          test -n "$(dpkg-deb -f "$deb" Package)"
+
+          scripts/publish-forgejo.sh
+
+          git config user.name "Forgejo Actions"
+          git config user.email "forgejo-actions@noreply.local"
+          git add EQUIBOP_VERSION EQUIBOP_SHA256 \
+            arch/equibop-bin/PKGBUILD \
+            void/srcpkgs/equibop-bin/template \
+            rpm/equibop-bin.spec opensuse/equibop-bin.spec
+          git commit -m "chore: update Equibop to ${new_version}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

@@ -1,7 +1,7 @@
 # Packaging audit: Debian and Devuan first
 
 Audit date: 2026-11-15  
-Repository version: 1.0.1
+Repository version: 1.0.4
 
 ## Changes made
 

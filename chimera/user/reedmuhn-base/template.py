@@ -1,5 +1,5 @@
 pkgname = "reedmuhn-base"
-pkgver = "1.0.3"
+pkgver = "1.0.4"
 pkgrel = 0
 metapackage = True
 pkgdesc = "ReedMuhn base: command-line environment"

@@ -1,5 +1,5 @@
 Name:           reedmuhn-base
-Version:        1.0.3
+Version:        1.0.4
 Release:        1%{?dist}
 Summary:        ReedMuhn base: command-line environment
 License:        MIT
@@ -18,11 +18,11 @@ Metapackage: contains no applications, only dependencies.
 %build
 %install
 mkdir -p %{buildroot}%{_docdir}/reedmuhn-base
-echo "reedmuhn-base 1.0.3" > %{buildroot}%{_docdir}/reedmuhn-base/VERSION
+echo "reedmuhn-base 1.0.4" > %{buildroot}%{_docdir}/reedmuhn-base/VERSION
 
 %files
 %{_docdir}/reedmuhn-base/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.3-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.4-1
 - Metapackage generated from meta.json

@@ -1,6 +1,6 @@
 # Template file for 'reedmuhn-gaming'
 pkgname=reedmuhn-gaming
-version=1.0.3
+version=1.0.4
 revision=1
 metapackage=yes
 short_desc="ReedMuhn gaming and Windows compatibility"

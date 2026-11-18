@@ -7,13 +7,13 @@ The first supported targets are Debian 13 (Trixie) and Devuan 6 (Excalibur). The
 Build on either target using its own package repositories:
 
 ```sh
-sudo apt install build-essential dpkg-dev debhelper git pkgconf libx11-dev libxft-dev \
+sudo apt install build-essential dpkg-dev debhelper git pkgconf python3 curl libx11-dev libxext-dev libxft-dev \
   libfontconfig-dev libdbus-1-dev libwraster-dev
 scripts/build-deb.sh
 scripts/test-deb.sh
 ```
 
-Enable the `contrib` component in APT sources to make `winetricks` available. The default build creates the core metapackages and builds the standalone `wm-desktop` application. Minecraft Launcher and Equibop are separate optional builds. Cider is kept opt-in because its upstream APT package index has not been dependable.
+Enable the `contrib` component in APT sources to make `winetricks` available. The default build creates the core metapackages and builds the standalone `wm-desktop` application. Minecraft Launcher is a separate optional build. Equibop is a dependency of `reedmuhn-desktop` (build it with `BUILD_EQUIBOP=1` and serve it from the ReedMuhn APT repository), and Steam comes from the official repositories via `reedmuhn-gaming`. `wmvol` and `wmmedia` are built alongside `wm-desktop`. Cider is kept opt-in because its upstream APT package index has not been dependable.
 
 ## APT repository suites
 

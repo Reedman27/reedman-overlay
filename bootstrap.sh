@@ -41,7 +41,7 @@ case "$family" in
   deb)
     files=()
     for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}_*_all.deb")"); done
-    has_meta wmaker && files+=("$(pick 'wm-desktop_*.deb')")
+    has_meta wmaker && files+=("$(pick 'wm-desktop_*.deb')" "$(pick 'wmvol_*.deb')" "$(pick 'wmmedia_*.deb')")
     if has_meta cider; then
       repo_pkg="$(pick 'reedmuhn-cider-repo_*_all.deb')"
       run "${SUDO[@]}" apt-get install -y "$repo_pkg"

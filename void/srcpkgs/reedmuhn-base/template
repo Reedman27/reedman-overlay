@@ -1,6 +1,6 @@
 # Template file for 'reedmuhn-base'
 pkgname=reedmuhn-base
-version=1.0.3
+version=1.0.4
 revision=1
 metapackage=yes
 short_desc="ReedMuhn base: command-line environment"

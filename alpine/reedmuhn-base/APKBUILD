@@ -1,6 +1,6 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-base
-pkgver=1.0.3
+pkgver=1.0.4
 pkgrel=0
 pkgdesc="ReedMuhn base: command-line environment"
 url="https://github.com/Reedman27"

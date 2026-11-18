@@ -1,0 +1,16 @@
+Source: wmvol
+Section: x11
+Priority: optional
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Build-Depends: debhelper-compat (= 13), pkgconf, libx11-dev, libxext-dev, libxft-dev
+Standards-Version: 4.6.2
+Homepage: https://github.com/Reedman27/dockapps-collection
+Rules-Requires-Root: no
+
+Package: wmvol
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, wireplumber
+Recommends: pulseaudio-utils
+Description: PipeWire volume dockapp for Window Maker
+ PipeWire volume dockapp for Window Maker with a popup mixer.
+ Uses wpctl from wireplumber; pactl (pulseaudio-utils) is optional.

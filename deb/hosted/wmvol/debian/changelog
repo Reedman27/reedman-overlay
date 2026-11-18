@@ -1,0 +1,5 @@
+wmvol (0.1.0-1) unstable; urgency=medium
+
+  * Debian packaging for reedmuhn's hosted repo.
+
+ -- Reedman27 <packages@reedmuhn.invalid>  Tue, 17 Nov 2026 12:00:00 +0000

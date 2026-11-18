@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+# Plain Makefile: PREFIX is set here, DESTDIR is passed by debhelper.
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build -- PREFIX=/usr
+
+override_dh_auto_install:
+	dh_auto_install -- PREFIX=/usr
+
+# tests need Xvfb and fake players; run them upstream with: make check
+override_dh_auto_test:

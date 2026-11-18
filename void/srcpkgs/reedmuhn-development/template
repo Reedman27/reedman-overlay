@@ -1,6 +1,6 @@
 # Template file for 'reedmuhn-development'
 pkgname=reedmuhn-development
-version=1.0.3
+version=1.0.4
 revision=1
 metapackage=yes
 short_desc="ReedMuhn development environment"

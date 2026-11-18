@@ -1,6 +1,6 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-gaming
-pkgver=1.0.3
+pkgver=1.0.4
 pkgrel=0
 pkgdesc="ReedMuhn gaming and Windows compatibility"
 url="https://github.com/Reedman27"

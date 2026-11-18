@@ -16,7 +16,7 @@ for c in "$HERE"/deb/reedmuhn-*/DEBIAN/control; do
   [[ "$pkg" == reedmuhn-cider* ]] && continue
   deps="$(sed -n 's/^Depends: //p' "$c" | tr ',' '\n' | sed 's/([^)]*)//; s/|.*//; s/ //g')"
   for d in $deps; do
-    [[ "$d" == wm-desktop || "$d" == equibop ]] && continue   # built/mirrored by build-deb.sh, served from the ReedMuhn repo
+    [[ "$d" == wm-desktop || "$d" == wmvol || "$d" == wmmedia || "$d" == equibop ]] && continue   # built/mirrored by build-deb.sh, served from the ReedMuhn repo
     cand="$(apt-cache policy "$d" 2>/dev/null | sed -n 's/^ *Candidate: //p')"
     if [[ -z "$cand" || "$cand" == "(none)" ]]; then echo "MISSING  $d  (needed by $pkg)"; missing=1
     else echo "ok       $d $cand"; fi

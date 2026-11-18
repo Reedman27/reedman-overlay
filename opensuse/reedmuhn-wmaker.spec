@@ -1,5 +1,5 @@
 Name:           reedmuhn-wmaker
-Version:        1.0.3
+Version:        1.0.4
 Release:        1%{?dist}
 Summary:        ReedMuhn Window Maker environment
 License:        MIT
@@ -21,11 +21,11 @@ Metapackage: contains no applications, only dependencies.
 %build
 %install
 mkdir -p %{buildroot}%{_docdir}/reedmuhn-wmaker
-echo "reedmuhn-wmaker 1.0.3" > %{buildroot}%{_docdir}/reedmuhn-wmaker/VERSION
+echo "reedmuhn-wmaker 1.0.4" > %{buildroot}%{_docdir}/reedmuhn-wmaker/VERSION
 
 %files
 %{_docdir}/reedmuhn-wmaker/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.3-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.4-1
 - Metapackage generated from meta.json

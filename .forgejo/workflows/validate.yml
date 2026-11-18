@@ -58,7 +58,7 @@ jobs:
           dpkg --add-architecture i386
           apt-get update
           apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl build-essential dpkg-dev debhelper pkgconf \
-            libx11-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev
+            libx11-dev libxext-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev
       - uses: actions/checkout@v4
       - name: Build packages and resolve dependencies
         run: |

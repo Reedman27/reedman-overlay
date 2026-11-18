@@ -24,10 +24,10 @@ package name that could not be confirmed.
 - `tailscale`: deb
 
 ## reedmuhn-wmaker
-- `wmmedia`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
-- `wmvol`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
 - `wmclock`: rpm, arch, chimera, alpine
 - `wmmon`: rpm, arch, chimera, alpine
+- `wmmedia`: rpm, opensuse, arch, chimera, alpine, void
+- `wmvol`: rpm, opensuse, arch, chimera, alpine, void
 - `wmsystemtray`: rpm, arch, chimera, alpine
 - `windowmaker`: chimera, alpine
 - `wm-desktop`: chimera, alpine

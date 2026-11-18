@@ -1,6 +1,6 @@
 # Maintainer: Reedman27 <packages@reedmuhn.invalid>
 pkgname=reedmuhn-development
-pkgver=1.0.3
+pkgver=1.0.4
 pkgrel=0
 pkgdesc="ReedMuhn development environment"
 url="https://github.com/Reedman27"

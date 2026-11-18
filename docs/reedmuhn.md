@@ -29,9 +29,9 @@ Install only the groups you want; none of the groups pulls in another ReedMuhn m
 | Package | Contents |
 |---|---|
 | `reedmuhn-base` | Zsh, Fastfetch, tmux, doas, btop, Git |
-| `reedmuhn-desktop` | Thunar, File Roller, Alacritty, VLC, PipeWire, WirePlumber, pavucontrol, playerctl |
-| `reedmuhn-wmaker` | Window Maker, wm-desktop, picom, sxhkd, dockapps where packaged, Xorg |
-| `reedmuhn-gaming` | Wine and Winetricks |
+| `reedmuhn-desktop` | Thunar, File Roller, Alacritty, VLC, PipeWire, WirePlumber, pavucontrol, playerctl, Equibop |
+| `reedmuhn-wmaker` | Window Maker, wm-desktop, picom, sxhkd, wmclock, wmmon, wmvol, wmmedia, wmsystemtray, Xorg |
+| `reedmuhn-gaming` | Wine, Winetricks and Steam (Debian: `steam-installer`) |
 | `reedmuhn-networking` | NetworkManager, Samba, Podman, chrony (Tailscale installed separately) |
 | `reedmuhn-development` | Neovim, OpenJDK, ImageMagick, compiler/build tools |
 | `reedmuhn-cider` | Cider client (native Cider repo where configured; repackaged binary on Gentoo, Void and openSUSE) |
@@ -64,12 +64,12 @@ Install the relevant distro build tools first. All generated binaries go to `out
 ### Debian 13 / Devuan 6
 
 ```sh
-sudo apt install build-essential dpkg-dev debhelper git pkgconf libx11-dev libxft-dev \
+sudo apt install build-essential dpkg-dev debhelper git pkgconf python3 curl libx11-dev libxext-dev libxft-dev \
   libfontconfig-dev libdbus-1-dev libwraster-dev
 scripts/build-deb.sh
 ```
 
-The default build compiles `wm-desktop` and builds the core metapackages. Enable Debian/Devuan `contrib` in APT sources for `winetricks`. Optional standalone packages are opt-in:
+The default build compiles `wm-desktop`, `wmvol` and `wmmedia` (pinned via `WM_DESKTOP_REF` / `DOCKAPPS_REF`; see `scripts/update-pins.sh`) and builds the core metapackages. Enable Debian/Devuan `contrib` in APT sources for `winetricks`. Optional standalone packages are opt-in (Equibop is only optional to *build*; `reedmuhn-desktop` depends on it, so it must be in your APT repository):
 
 ```sh
 MC_SHA256=<verified-sha256> BUILD_MINECRAFT=1 scripts/build-deb.sh

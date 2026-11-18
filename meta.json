@@ -563,8 +563,22 @@
         "wmmon"
       ]
     },
-    "wmmedia": {},
-    "wmvol": {},
+    "wmmedia": {
+      "deb": [
+        "wmmedia"
+      ],
+      "gentoo": [
+        "x11-plugins/wmmedia"
+      ]
+    },
+    "wmvol": {
+      "deb": [
+        "wmvol"
+      ],
+      "gentoo": [
+        "x11-plugins/wmvol"
+      ]
+    },
     "wmsystemtray": {
       "deb": [
         "wmsystemtray"
@@ -954,6 +968,8 @@
     "wm-desktop",
     "minecraft-launcher-bin",
     "cider-bin",
-    "equibop-bin"
+    "equibop-bin",
+    "wmmedia",
+    "wmvol"
   ]
 }

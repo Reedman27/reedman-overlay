@@ -1,0 +1,16 @@
+Source: wmmedia
+Section: x11
+Priority: optional
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Build-Depends: debhelper-compat (= 13), pkgconf, libx11-dev, libxext-dev
+Standards-Version: 4.6.2
+Homepage: https://github.com/Reedman27/dockapps-collection
+Rules-Requires-Root: no
+
+Package: wmmedia
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, playerctl
+Suggests: mpc
+Description: Media-control dockapp for Window Maker
+ Media-control dockapp for Window Maker, driving players through
+ playerctl (MPRIS) or mpc (MPD).

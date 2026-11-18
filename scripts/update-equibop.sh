@@ -5,10 +5,15 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 VER="${1:-}"
 if [[ -z "$VER" ]]; then
-  loc="$(curl -fsS -o /dev/null -w '%{redirect_url}' https://github.com/Equicord/Equibop/releases/latest || true)"
+  loc="$(curl -fsS -o /dev/null -w '%{redirect_url}' https://github.com/Equicord/Equibop/releases/latest)"
   VER="${loc##*/v}"
   [[ "$VER" =~ ^[0-9]+(\.[0-9]+)+$ ]] || { echo "Could not detect the newest Equibop release; pass a version explicitly." >&2; exit 1; }
   echo "Newest Equibop release: $VER"
+  current="$(cat "$HERE/EQUIBOP_VERSION" 2>/dev/null || true)"
+  if [[ "$VER" == "$current" && "${EQUIBOP_FORCE:-0}" != 1 ]]; then
+    echo "Equibop is already current ($VER); skipping download."
+    exit 0
+  fi
 fi
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
@@ -16,6 +21,10 @@ URL="https://github.com/Equicord/Equibop/releases/download/v${VER}/equibop_${VER
 curl -fL "$URL" -o "$TMP"
 [[ "$(head -c 7 "$TMP")" == '!<arch>' ]] || { echo "Downloaded file is not a Debian archive" >&2; exit 1; }
 SUM="$(sha256sum "$TMP" | awk '{print $1}')"
+if [[ -n "${EQUIBOP_ARTIFACT_DIR:-}" ]]; then
+  mkdir -p "$EQUIBOP_ARTIFACT_DIR"
+  cp "$TMP" "$EQUIBOP_ARTIFACT_DIR/equibop_${VER}_amd64.deb"
+fi
 printf '%s\n' "$VER" > "$HERE/EQUIBOP_VERSION"
 printf '%s\n' "$SUM" > "$HERE/EQUIBOP_SHA256"
 
@@ -23,14 +32,15 @@ sed -i -E "s/^pkgver=.*/pkgver=${VER}/; s/^sha256sums=.*/sha256sums=('${SUM}')/"
 sed -i -E "s/^version=.*/version=${VER}/; s|^distfiles=.*|distfiles=\"${URL}\"|; s/^checksum=.*/checksum=\"${SUM}\"/" "$HERE/void/srcpkgs/equibop-bin/template"
 sed -i -E "s/^Version:.*/Version:        ${VER}/; s|^Source0:.*|Source0:        ${URL}|" "$HERE/rpm/equibop-bin.spec"
 cp "$HERE/rpm/equibop-bin.spec" "$HERE/opensuse/equibop-bin.spec"
-rm -f "$HERE/net-im/equibop-bin"/equibop-bin-*.ebuild
-cat > "$HERE/net-im/equibop-bin/equibop-bin-${VER}.ebuild" <<Ebuild
+if [[ "${EQUIBOP_SKIP_GENTOO:-0}" != 1 ]]; then
+  rm -f "$HERE/net-im/equibop-bin"/equibop-bin-*.ebuild
+  cat > "$HERE/net-im/equibop-bin/equibop-bin-${VER}.ebuild" <<Ebuild
 EAPI=8
 inherit unpacker xdg
 DESCRIPTION="Custom Discord client with Equicord preinstalled"
 HOMEPAGE="https://github.com/Equicord/Equibop"
 SRC_URI="${URL} -> \${P}.deb"
-S=\"\${WORKDIR}\"
+S="\${WORKDIR}"
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
@@ -45,5 +55,8 @@ src_install() {
   [[ ! -d etc ]] || cp -a etc "\${ED}/"
 }
 Ebuild
-printf 'Equibop %s pinned; SHA-256: %s\n' "$VER" "$SUM"
-printf 'On Gentoo, generate the Manifest with: ebuild net-im/equibop-bin/equibop-bin-%s.ebuild manifest\n' "$VER"
+  printf 'Equibop %s pinned; SHA-256: %s\n' "$VER" "$SUM"
+  printf 'On Gentoo, generate the Manifest with: ebuild net-im/equibop-bin/equibop-bin-%s.ebuild manifest\n' "$VER"
+else
+  echo "Skipping Gentoo ebuild update (EQUIBOP_SKIP_GENTOO=1)."
+fi
