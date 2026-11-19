@@ -76,4 +76,3 @@ Preflight refuses non-amd64/all files, an Equibop that does not match its pin, a
 - `reedmuhn-cider` needs the optional Cider repository package and is not part of the default build.
 - Tailscale and Firefox-family browsers are not part of the metapackages (no suitable Debian package).
 - Hosted source packages track upstream HEAD until `WM_DESKTOP_REF` / `DOCKAPPS_REF` are pinned (`scripts/update-pins.sh`).
-- The `Maintainer:` in `deb/hosted/*/debian/control` is a placeholder.

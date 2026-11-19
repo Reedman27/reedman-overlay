@@ -134,7 +134,7 @@ echo "{name} {VER}" > %{{buildroot}}%{{_docdir}}/{name}/VERSION
 %{{_docdir}}/{name}/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - {VER}-1
+* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - {VER}-1
 - Metapackage generated from meta.json
 """)
 
@@ -182,7 +182,7 @@ RDEPEND="
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>packages@reedmuhn.invalid</email>
+		<email>213130028+Reedman27@users.noreply.github.com</email>
 		<name>Reedman27</name>
 	</maintainer>
 	<longdescription>{summary}. Contains no files, only dependencies.</longdescription>

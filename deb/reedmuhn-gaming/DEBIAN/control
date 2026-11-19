@@ -3,7 +3,7 @@ Version: 1.0.4
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 Depends: wine, winetricks, steam-installer
 Description: ReedMuhn gaming and Windows compatibility
  Metapackage: contains no files, only dependencies.

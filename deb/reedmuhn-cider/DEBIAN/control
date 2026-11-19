@@ -3,7 +3,7 @@ Version: 1.0.4
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 Depends: reedmuhn-cider-repo (>= 1.0)
 Recommends: cider
 Description: ReedMuhn Cider: Apple Music client

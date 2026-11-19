@@ -35,6 +35,5 @@ The workflow is configured to run those APT tests, but a workflow run has not ye
 
 ## Release blockers
 
-- Replace `packages@reedmuhn.invalid` in `meta.json` and the standalone `wm-desktop` Debian metadata with a real maintainer contact.
 - Generate and publish a real APT signing key, then run `scripts/index-repositories.sh` with `GPG_KEY_ID` set. Unsigned repository metadata must not be published as trusted.
 - Equibop and Minecraft downloads are opt-in; independently verify upstream checksums before publishing those binary artifacts.
