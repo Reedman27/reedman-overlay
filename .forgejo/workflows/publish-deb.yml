@@ -1,6 +1,6 @@
 name: Build and publish Debian packages
 
-# Runs by itself: on every push to the main branch that changes packaging, weekly (to pick up new upstream
+# Runs by itself: on a push to the main branch that changes Debian packaging (not docs or other distros), weekly (to pick up new upstream
 # wm-desktop / dockapps commits), and on demand. It builds everything, proves it is installable on Debian 13,
 # and only then uploads to the Forgejo Debian registry (distribution "reedmuhn"). Any failed step stops it
 # before the upload. Needs the REGISTRY_TOKEN repository secret (an access token with write:package).
@@ -8,12 +8,17 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'VERSION'
-      - 'meta.json'
       - 'deb/**'
-      - 'scripts/**'
       - 'EQUIBOP_*'
       - '*_REF'
+      - 'scripts/gen.py'
+      - 'scripts/build-deb.sh'
+      - 'scripts/check-deps.sh'
+      - 'scripts/deb-common.sh'
+      - 'scripts/enable-steam-prereqs.sh'
+      - 'scripts/publish-forgejo.sh'
+      - 'scripts/update-pins.sh'
+      - '.forgejo/workflows/publish-deb.yml'
   schedule:
     - cron: '17 5 * * 1'
   workflow_dispatch:

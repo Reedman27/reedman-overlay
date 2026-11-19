@@ -1,0 +1,88 @@
+name: Validate Debian and Devuan packages
+
+# Runs only when something Debian-specific changes. One set of .deb files serves both Debian and Devuan, so
+# both are tested here (the matrix) and published once (publish-deb.yml).
+# For another distribution, copy this file to validate-<distro>.yml and change the paths and image.
+on:
+  push:
+    paths:
+      - 'deb/**'
+      - 'EQUIBOP_*'
+      - '*_REF'
+      - 'scripts/gen.py'
+      - 'scripts/build-deb.sh'
+      - 'scripts/check-deps.sh'
+      - 'scripts/deb-common.sh'
+      - 'scripts/enable-steam-prereqs.sh'
+      - 'scripts/publish-forgejo.sh'
+      - 'scripts/setup-apt-repo.sh'
+      - 'scripts/update-equibop.sh'
+      - 'scripts/update-pins.sh'
+      - 'scripts/test-deb.sh'
+      - '.forgejo/workflows/validate-deb.yml'
+  pull_request:
+    paths:
+      - 'deb/**'
+      - 'EQUIBOP_*'
+      - '*_REF'
+      - 'scripts/gen.py'
+      - 'scripts/build-deb.sh'
+      - 'scripts/check-deps.sh'
+      - 'scripts/deb-common.sh'
+      - 'scripts/enable-steam-prereqs.sh'
+      - 'scripts/publish-forgejo.sh'
+      - 'scripts/setup-apt-repo.sh'
+      - 'scripts/update-equibop.sh'
+      - 'scripts/update-pins.sh'
+      - 'scripts/test-deb.sh'
+      - '.forgejo/workflows/validate-deb.yml'
+
+# Forgejo Actions. Adjust `runs-on` to a label your runner provides.
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+    steps:
+      - name: Install tools (checkout needs git and node)
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl dpkg-dev shellcheck
+      - uses: actions/checkout@v4
+      - name: Lint the Debian scripts
+        run: |
+          shellcheck -x -S warning scripts/build-deb.sh scripts/check-deps.sh scripts/deb-common.sh \
+            scripts/enable-steam-prereqs.sh scripts/publish-forgejo.sh scripts/setup-apt-repo.sh \
+            scripts/update-equibop.sh scripts/test-deb.sh
+      - name: Build and inspect DEB metapackages, and test the Debian helper scripts offline
+        run: scripts/test-deb.sh
+
+  apt-resolution:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["debian:trixie", "devuan/devuan:excalibur"]
+    container:
+      image: ${{ matrix.image }}
+    name: APT dependency resolution (${{ matrix.image }})
+    steps:
+      - name: Install build tools (everything here is in main)
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl build-essential dpkg-dev debhelper pkgconf \
+            libx11-dev libxext-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev gpg
+      - uses: actions/checkout@v4
+      - name: Enable contrib and i386 with the same helper users run (reedmuhn-gaming needs both)
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          scripts/enable-steam-prereqs.sh
+      - name: Build every package, including the standalone ones and Equibop (SHA-256 verified)
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          scripts/build-deb.sh
+      - name: Classify every dependency and simulate installing all of out/
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          scripts/check-deps.sh
