@@ -14,7 +14,7 @@ jobs:
       - name: Install tools (checkout needs git and node)
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 dpkg-dev shellcheck
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl dpkg-dev shellcheck
       - uses: actions/checkout@v4
       - name: Validate metadata and shell syntax
         run: |
