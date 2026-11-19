@@ -56,7 +56,7 @@ command -v dpkg-deb >/dev/null || { echo "dpkg-deb is required to inspect packag
 
 # ---- preflight ----
 declare -A have_pkg=()
-names=(); versions=()
+names=(); versions=(); archs=()
 for f in "${files[@]}"; do
   is_deb_file "$f" || { echo "Refusing to upload $f: not a Debian package" >&2; exit 1; }
   p="$(deb_field "$f" Package)"; v="$(deb_field "$f" Version)"; a="$(deb_field "$f" Architecture)"
@@ -65,7 +65,7 @@ for f in "${files[@]}"; do
   if [[ "$p" == equibop ]]; then
     verify_equibop "$f" "$v" || { echo "Refusing to publish an unverified Equibop package." >&2; exit 1; }
   fi
-  have_pkg[$p]=1; names+=("$p"); versions+=("$v")
+  have_pkg[$p]=1; names+=("$p"); versions+=("$v"); archs+=("$a")
 done
 
 if [[ -z "${PUBLISH_PARTIAL:-}" ]]; then
@@ -111,22 +111,29 @@ done
 echo "$uploaded new file(s) uploaded."
 
 # ---- verify that the APT index now lists everything ----
+# Forgejo keeps one index per architecture: "all" packages (the metapackages) are in binary-all/Packages, the rest in
+# binary-amd64/Packages. Each package is looked up in the index for its own architecture.
 [[ -z "${SKIP_VERIFY:-}" ]] || exit 0
-idx="$(mktemp)"; trap 'rm -f "$idx"' EXIT
-code="$(req -o "$idx" -w '%{http_code}' "$REPO/dists/$DIST/main/binary-amd64/Packages")"
-if [[ "$code" != 200 ]]; then
-  echo "Uploaded, but the index $REPO/dists/$DIST/main/binary-amd64/Packages returned HTTP $code; check it before announcing the repository." >&2
-  exit 1
-fi
+tmpfiles=(); trap 'rm -f "${tmpfiles[@]}"' EXIT
+declare -A idx=()
+for a in "${archs[@]}"; do
+  [[ -z "${idx[$a]:-}" ]] || continue
+  idx[$a]="$(mktemp)"; tmpfiles+=("${idx[$a]}")
+  code="$(req -o "${idx[$a]}" -w '%{http_code}' "$REPO/dists/$DIST/main/binary-$a/Packages")"
+  if [[ "$code" != 200 ]]; then
+    echo "Uploaded, but the index $REPO/dists/$DIST/main/binary-$a/Packages returned HTTP $code; check it before announcing the repository." >&2
+    exit 1
+  fi
+done
 missing=0
 for i in "${!names[@]}"; do
   if awk -v p="${names[$i]}" -v v="${versions[$i]}" 'BEGIN { RS = ""; FS = "\n" }
        { pk = ""; vr = ""; for (j = 1; j <= NF; j++) { if ($j ~ /^Package: /) pk = substr($j, 10); if ($j ~ /^Version: /) vr = substr($j, 10) } if (pk == p && vr == v) f = 1 }
-       END { exit !f }' "$idx"; then
-    echo "indexed  ${names[$i]} ${versions[$i]}"
+       END { exit !f }' "${idx[${archs[$i]}]}"; then
+    echo "indexed  ${names[$i]} ${versions[$i]} (${archs[$i]})"
   else
-    echo "NOT INDEXED  ${names[$i]} ${versions[$i]}" >&2; missing=1
+    echo "NOT INDEXED  ${names[$i]} ${versions[$i]} (${archs[$i]})" >&2; missing=1
   fi
 done
 (( missing == 0 )) || { echo "Some packages are not in the APT index." >&2; exit 1; }
-echo "All packages are listed in the signed APT index (distribution $DIST). Next: sudo scripts/setup-apt-repo.sh; sudo apt install reedmuhn-base"
+echo "All packages are listed in the signed APT index (distribution $DIST). Next: doas apt update && doas apt install reedmuhn-base"
