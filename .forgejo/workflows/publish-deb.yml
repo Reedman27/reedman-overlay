@@ -3,7 +3,7 @@ name: Build and publish Debian packages
 # Runs by itself: on every push to the main branch that changes packaging, weekly (to pick up new upstream
 # wm-desktop / dockapps commits), and on demand. It builds everything, proves it is installable on Debian 13,
 # and only then uploads to the Forgejo Debian registry (distribution "reedmuhn"). Any failed step stops it
-# before the upload. Needs the FORGEJO_TOKEN repository secret (an access token with write:package).
+# before the upload. Needs the REGISTRY_TOKEN repository secret (an access token with write:package).
 on:
   push:
     branches: [main, master]
@@ -48,5 +48,5 @@ jobs:
       - name: Upload to the Forgejo Debian registry and verify the index
         env:
           FORGEJO_USER: Reedman27
-          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
         run: scripts/publish-forgejo.sh

@@ -22,7 +22,7 @@ jobs:
       - name: Check upstream and publish only when newer
         env:
           FORGEJO_USER: Reedman27
-          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
         run: |
           set -euo pipefail
 
