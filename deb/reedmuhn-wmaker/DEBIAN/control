@@ -8,5 +8,6 @@ Depends: wmaker, wm-desktop, picom, sxhkd, wmclock, wmmon, wmmedia, wmvol, wmsys
 Description: ReedMuhn Window Maker environment
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive, except as noted below.
+ .
+ Served by the ReedMuhn APT repository (scripts/setup-apt-repo.sh): wm-desktop, wmmedia, wmvol.

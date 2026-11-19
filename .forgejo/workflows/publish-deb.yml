@@ -1,0 +1,52 @@
+name: Build and publish Debian packages
+
+# Runs by itself: on every push to the main branch that changes packaging, weekly (to pick up new upstream
+# wm-desktop / dockapps commits), and on demand. It builds everything, proves it is installable on Debian 13,
+# and only then uploads to the Forgejo Debian registry (distribution "reedmuhn"). Any failed step stops it
+# before the upload. Needs the FORGEJO_TOKEN repository secret (an access token with write:package).
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'VERSION'
+      - 'meta.json'
+      - 'deb/**'
+      - 'scripts/**'
+      - 'EQUIBOP_*'
+      - '*_REF'
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+concurrency:
+  group: publish-deb
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    container:
+      image: debian:trixie
+    steps:
+      - name: Install build tools
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get update
+          apt-get install -y --no-install-recommends git ca-certificates nodejs python3 curl build-essential dpkg-dev debhelper pkgconf \
+            libx11-dev libxext-dev libxft-dev libfontconfig-dev libdbus-1-dev libwraster-dev gpg
+      - uses: actions/checkout@v4
+      - name: Offline tests
+        run: scripts/test-deb.sh
+      - name: Enable contrib and i386 (needed to verify reedmuhn-gaming)
+        run: scripts/enable-steam-prereqs.sh
+      - name: Build
+        run: scripts/build-deb.sh
+      - name: Verify installability before anything is uploaded
+        run: scripts/check-deps.sh
+      - name: Preflight (no upload)
+        run: scripts/publish-forgejo.sh --dry-run
+      - name: Upload to the Forgejo Debian registry and verify the index
+        env:
+          FORGEJO_USER: Reedman27
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+        run: scripts/publish-forgejo.sh

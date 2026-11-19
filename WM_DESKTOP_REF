@@ -1,2 +1,1 @@
-# Pinned commit for https://github.com/Reedman27/wm-desktop.git (HEAD). Update with: scripts/update-pins.sh wm-desktop [ref]
-9ddfae88765a442812548a52a909656c0f7b1b30
+# Pinned wm-desktop commit/tag for deb builds. Set with: scripts/update-pins.sh wm-desktop [ref]

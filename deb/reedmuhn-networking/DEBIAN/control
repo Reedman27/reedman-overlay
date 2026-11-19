@@ -8,5 +8,4 @@ Depends: network-manager, samba, podman, chrony
 Description: ReedMuhn networking and self-hosting
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive.

@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 # Install selected ReedMuhn metapackages and optional standalone apps.
 # Examples: ./bootstrap.sh base wmaker
-#           ./bootstrap.sh base desktop equibop minecraft
+#           ./bootstrap.sh base desktop gaming
+# Debian/Devuan: adds the ReedMuhn APT repository if missing (one time), then runs a normal `apt install`.
+# Add --local to install from packages you built into out/ instead (scripts/build-deb.sh).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUT="${OUT_DIR:-$HERE/out}"
-DRY=0
-if [[ "${1:-}" == "--dry-run" ]]; then DRY=1; shift; fi
-[[ $# -gt 0 ]] || { echo "Usage: $0 [--dry-run] base|desktop|wmaker|gaming|networking|development|cider|equibop|minecraft ..." >&2; exit 2; }
+DRY=0; LOCAL=0
+while [[ "${1:-}" == --* ]]; do
+  case "$1" in --dry-run) DRY=1 ;; --local) LOCAL=1 ;; *) echo "unknown option: $1" >&2; exit 2 ;; esac
+  shift
+done
+[[ $# -gt 0 ]] || { echo "Usage: $0 [--dry-run] [--local] base|desktop|wmaker|gaming|networking|development|cider|equibop|minecraft ..." >&2; exit 2; }
 METAS=(); APPS=()
 for item in "$@"; do
   case "$item" in
@@ -39,6 +44,17 @@ echo "Detected ${PRETTY_NAME:-$ID} -> $family"
 
 case "$family" in
   deb)
+    if (( ! LOCAL )); then
+      # Normal route: repository + apt. Nothing needs building.
+      [[ -f /etc/apt/sources.list.d/reedmuhn.sources ]] || run "${SUDO[@]}" "$HERE/scripts/setup-apt-repo.sh"
+      if has_meta gaming && [[ "${ID:-}" == debian || "${ID:-}" == devuan ]]; then
+        run "${SUDO[@]}" "$HERE/scripts/enable-steam-prereqs.sh"
+      fi
+      pkgs=(); for m in "${METAS[@]}"; do pkgs+=("reedmuhn-$m"); done
+      for a in "${APPS[@]}"; do case "$a" in equibop-bin) pkgs+=(equibop) ;; minecraft-launcher-bin) pkgs+=(minecraft-launcher) ;; esac; done
+      run "${SUDO[@]}" apt-get install -y "${pkgs[@]}"
+      exit 0
+    fi
     files=()
     for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}_*_all.deb")"); done
     has_meta wmaker && files+=("$(pick 'wm-desktop_*.deb')" "$(pick 'wmvol_*.deb')" "$(pick 'wmmedia_*.deb')")
@@ -53,11 +69,16 @@ case "$family" in
     if has_meta desktop || has_app equibop-bin; then
       eq="$(find "$OUT" -maxdepth 1 -type f -name 'equibop_*_amd64.deb' 2>/dev/null | sort -V | tail -n1)"
       if [[ -n "$eq" ]]; then files+=("$eq")
-      elif has_app equibop-bin; then echo "No equibop .deb in $OUT: build with BUILD_EQUIBOP=1 scripts/build-deb.sh" >&2; exit 1
+      elif has_app equibop-bin; then echo "No equibop .deb in $OUT: run scripts/build-deb.sh (Equibop is built by default)" >&2; exit 1
       else echo "Note: no local equibop .deb; apt must find 'equibop' in the ReedMuhn repository (scripts/setup-apt-repo.sh)." >&2; fi
     fi
-    # reedmuhn-gaming depends on steam-installer (official repos), which needs i386 plus contrib/non-free.
-    has_meta gaming && run "${SUDO[@]}" "$HERE/scripts/enable-steam-prereqs.sh"
+    # reedmuhn-gaming depends on winetricks and steam-installer: Debian "contrib" packages, and Steam also needs i386.
+    if has_meta gaming; then
+      case "${ID:-}" in
+        debian|devuan) run "${SUDO[@]}" "$HERE/scripts/enable-steam-prereqs.sh" ;;
+        *) echo "Note: scripts/enable-steam-prereqs.sh supports Debian/Devuan only; enable your distribution's Steam component (Ubuntu: multiverse) and i386 yourself." >&2 ;;
+      esac
+    fi
     run "${SUDO[@]}" apt-get install -y "${files[@]}"
     ;;
   rpm|opensuse)

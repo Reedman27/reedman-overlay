@@ -8,5 +8,6 @@ Depends: thunar, file-roller, alacritty, vlc, pipewire, pipewire-pulse, wireplum
 Description: ReedMuhn desktop: general graphical applications
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive, except as noted below.
+ .
+ Served by the ReedMuhn APT repository (scripts/setup-apt-repo.sh): equibop.

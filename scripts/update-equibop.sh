@@ -3,6 +3,8 @@
 # Usage: scripts/update-equibop.sh [VERSION]   (no argument = newest upstream release)
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
+# shellcheck source=scripts/deb-common.sh
+. "$HERE/scripts/deb-common.sh"
 VER="${1:-}"
 if [[ -z "$VER" ]]; then
   loc="$(curl -fsS -o /dev/null -w '%{redirect_url}' https://github.com/Equicord/Equibop/releases/latest)"
@@ -18,9 +20,17 @@ fi
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
 URL="https://github.com/Equicord/Equibop/releases/download/v${VER}/equibop_${VER}_amd64.deb"
-curl -fL "$URL" -o "$TMP"
-[[ "$(head -c 7 "$TMP")" == '!<arch>' ]] || { echo "Downloaded file is not a Debian archive" >&2; exit 1; }
+curl -fL --retry 3 "$URL" -o "$TMP"
+# Structure and metadata first: it must be a Debian package named equibop for amd64 at this version.
+verify_equibop --metadata-only "$TMP" "$VER" || exit 1
 SUM="$(sha256sum "$TMP" | awk '{print $1}')"
+# A release that is already pinned must never silently change under us: that would mean upstream replaced the file.
+OLD_SUM="$(tr -d '[:space:]' < "$HERE/EQUIBOP_SHA256" 2>/dev/null || true)"
+if [[ "$VER" == "$(cat "$HERE/EQUIBOP_VERSION" 2>/dev/null || true)" && -n "$OLD_SUM" && "$SUM" != "$OLD_SUM" && "${EQUIBOP_FORCE:-0}" != 1 ]]; then
+  echo "Equibop $VER is already pinned with SHA-256 $OLD_SUM but the download hashes to $SUM." >&2
+  echo "Upstream may have replaced the release file. Investigate; set EQUIBOP_FORCE=1 only if you trust the new file." >&2
+  exit 1
+fi
 if [[ -n "${EQUIBOP_ARTIFACT_DIR:-}" ]]; then
   mkdir -p "$EQUIBOP_ARTIFACT_DIR"
   cp "$TMP" "$EQUIBOP_ARTIFACT_DIR/equibop_${VER}_amd64.deb"
