@@ -4,13 +4,13 @@ inherit unpacker xdg
 
 DESCRIPTION="Custom Discord client with Equicord preinstalled"
 HOMEPAGE="https://github.com/Equicord/Equibop"
-SRC_URI="https://github.com/Equicord/Equibop/releases/download/v3.3.4/equibop_3.3.4_amd64.deb -> ${P}.deb"
+SRC_URI="https://github.com/Equicord/Equibop/releases/download/v${PV}/equibop_${PV}_amd64.deb -> ${P}.deb"
 S=${WORKDIR}
 
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64"
-RESTRICT="mirror"
+RESTRICT="bindist mirror strip"
 
 RDEPEND="
 	media-libs/alsa-lib

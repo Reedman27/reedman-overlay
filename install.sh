@@ -17,6 +17,5 @@ else
   echo "Cloning $REPO into $DEST"
   git clone --depth 1 --quiet "$REPO" "$DEST"
 fi
-exec "$DEST/bootstrap.sh" "$@"
 command -v bash >/dev/null 2>&1 || { echo "bash is required (Chimera: apk add bash; Alpine: apk add bash)" >&2; exit 1; }
 exec bash "$DEST/bootstrap.sh" "$@"

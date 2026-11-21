@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>213130028+Reedman27@users.noreply.github.com</email>
+		<name>Reedman27</name>
+	</maintainer>
+	<longdescription>Prebuilt Cider (Apple Music client), repackaged from the upstream Debian package. Proprietary; a paid licence is needed to use it.</longdescription>
+</pkgmetadata>

@@ -78,7 +78,6 @@ cat > "$HOME/GNUstep/Defaults/WMRootMenu" <<'MENU'
   "Applications",
   ("Terminal", SHEXEC, "urxvt || alacritty"),
   ("Run...", SHEXEC, "dmenu_run"),
-  ("Web browser", SHEXEC, "firefox"),
   ("Files", SHEXEC, "thunar"),
   (
     "Window Maker",

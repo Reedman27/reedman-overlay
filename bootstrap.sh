@@ -77,6 +77,8 @@ case "$family" in
       (( ${#METAS[@]} > 0 || ${#APPS[@]} > 1 )) || exit 1
     fi
     if (( ! LOCAL )); then
+      # The cider selection needs reedmuhn-cider-repo, which build-deb.sh only builds on request.
+      has_meta cider && export BUILD_CIDER_REPO=1
       if (( DRY )); then echo "+ $HERE/scripts/build-deb.sh"
       else OUT_DIR="$OUT" "$HERE/scripts/build-deb.sh"; fi
     fi
@@ -107,6 +109,8 @@ case "$family" in
     ;;
   rpm|opensuse)
     # Packages to build (opensuse/build.sh also works on Fedora). Existing files in out/ are reused with --local.
+    # reedmuhn-desktop requires equibop-bin, which is built here, so it must be built and installed with it.
+    if has_meta desktop && ! has_app equibop-bin; then APPS+=(equibop-bin); fi
     build=()
     for m in "${METAS[@]}"; do build+=("$m"); done
     has_meta wmaker && build+=(wm-desktop wmvol wmmedia)
@@ -117,7 +121,8 @@ case "$family" in
       else OUT_DIR="$OUT" "$HERE/opensuse/build.sh" "${build[@]}"; fi
     fi
     files=()
-    for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}-*.noarch.rpm")"); done
+    # [0-9]* keeps reedmuhn-cider-*.rpm from also matching reedmuhn-cider-repo-*.rpm.
+    for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}-[0-9]*.noarch.rpm")"); done
     if has_meta wmaker; then for w in wm-desktop wmvol wmmedia; do files+=("$(pick "$w-*.rpm")"); done; fi
     has_meta cider && [[ $family == rpm ]] && { run "${SUDO[@]}" dnf install -y "$(pick 'reedmuhn-cider-repo-*.noarch.rpm')"; run "${SUDO[@]}" dnf makecache; }
     has_meta cider && [[ $family == opensuse ]] && files+=("$(pick 'cider-bin-*.rpm')")
@@ -127,6 +132,8 @@ case "$family" in
     else run "${SUDO[@]}" dnf install -y "${files[@]}"; fi
     ;;
   arch)
+    # reedmuhn-desktop depends on equibop-bin, which is built from arch/ and must be installed with it.
+    if has_meta desktop && ! has_app equibop-bin; then APPS+=(equibop-bin); fi
     if (( ! LOCAL )); then
       # directories under arch/ to build for this selection
       ab=(); for m in "${METAS[@]}"; do ab+=("reedmuhn-$m"); done
@@ -138,7 +145,7 @@ case "$family" in
       run "$HERE/arch/build.sh" "${ab[@]}"
     fi
     files=()
-    for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}-*.pkg.tar.*")"); done
+    for m in "${METAS[@]}"; do files+=("$(pick "reedmuhn-${m}-[0-9]*.pkg.tar.*")"); done
     if has_meta wmaker; then for w in wm-desktop wmvol-git wmmedia-git; do files+=("$(pick "$w-*.pkg.tar.*")"); done; fi
     has_meta cider && { run "${SUDO[@]}" pacman -U --needed "$(pick 'reedmuhn-cider-repo-*.pkg.tar.*')"; run "${SUDO[@]}" pacman -Syu; }
     has_app minecraft-launcher-bin && files+=("$(pick 'minecraft-launcher-bin-*.pkg.tar.*')")
@@ -163,7 +170,8 @@ case "$family" in
     has_meta wmaker && pkgs+=(wm-desktop)
     has_app rustcord && echo "Note: there is no Void template for rustcord yet." >&2
     has_app minecraft-launcher-bin && pkgs+=(minecraft-launcher-bin)
-    has_app equibop-bin && pkgs+=(equibop-bin)
+    # reedmuhn-desktop depends on equibop-bin, so build it alongside.
+    { has_app equibop-bin || has_meta desktop; } && pkgs+=(equibop-bin)
     printf '  ./void/build.sh'; printf ' %q' "${pkgs[@]}"; printf '\n'
     echo "Then install from the local binpkgs repository (xbps-src indexes it):"
     printf '  sudo xbps-install --repository=%q' "$HOME/void-packages/hostdir/binpkgs"; printf ' %q' "${pkgs[@]}"; printf '\n'

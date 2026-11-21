@@ -72,7 +72,7 @@ if [[ ! -e "$PKGDIR/metadata.xml" ]]; then
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
   <maintainer type="person">
-    <email>you@example.com</email>
+    <email>213130028+Reedman27@users.noreply.github.com</email>
     <name>Reedman27</name>
   </maintainer>
   <longdescription>
