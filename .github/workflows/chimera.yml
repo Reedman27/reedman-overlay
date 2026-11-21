@@ -86,6 +86,10 @@ jobs:
           python3 cbuild relink-subpkgs
           test -z "$(git status --short user | grep -v '^??')"
 
+      - name: Bootstrap the build root
+        working-directory: ${{ github.workspace }}/cports
+        run: python3 cbuild binary-bootstrap
+
       - name: Build packages (windowmaker first, wm-desktop needs its devel package)
         working-directory: ${{ github.workspace }}/cports
         run: |
