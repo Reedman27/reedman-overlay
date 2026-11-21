@@ -3,7 +3,7 @@ Version: @VERSION@
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+Maintainer: Reedman27 <packages@reedmuhn.invalid>
 Homepage: https://cider.sh
 Description: Cider Collective apt repository (source entry and signing key)
  Installs the official Cider apt source and its signing key, using the same

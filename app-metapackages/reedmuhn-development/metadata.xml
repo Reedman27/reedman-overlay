@@ -2,7 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>213130028+Reedman27@users.noreply.github.com</email>
+		<email>packages@reedmuhn.invalid</email>
 		<name>Reedman27</name>
 	</maintainer>
 	<longdescription>ReedMuhn development environment. Contains no files, only dependencies.</longdescription>

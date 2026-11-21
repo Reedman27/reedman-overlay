@@ -1,5 +1,5 @@
 Name:           reedmuhn-development
-Version:        1.0.4
+Version:        1.0.3
 Release:        1%{?dist}
 Summary:        ReedMuhn development environment
 License:        MIT
@@ -19,11 +19,11 @@ Metapackage: contains no applications, only dependencies.
 %build
 %install
 mkdir -p %{buildroot}%{_docdir}/reedmuhn-development
-echo "reedmuhn-development 1.0.4" > %{buildroot}%{_docdir}/reedmuhn-development/VERSION
+echo "reedmuhn-development 1.0.3" > %{buildroot}%{_docdir}/reedmuhn-development/VERSION
 
 %files
 %{_docdir}/reedmuhn-development/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - 1.0.4-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.3-1
 - Metapackage generated from meta.json

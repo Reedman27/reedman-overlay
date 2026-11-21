@@ -28,5 +28,5 @@ tar -xf data.tar.* -C %{buildroot}
 %{_datadir}/icons/*
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - %{version}-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - %{version}-1
 - Repackaged from Mojang's .deb

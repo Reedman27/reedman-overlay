@@ -1,23 +1,5 @@
 # Changelog
 
-## Unreleased
-- Debian: the default `scripts/build-deb.sh` now builds everything a metapackage depends on, Equibop included (`BUILD_EQUIBOP=0` opts out); a metapackage whose repo-provided dependency is opted out is skipped loudly instead of being built uninstallable.
-- Debian: Equibop is downloaded outside `out/` and copied in only after SHA-256 and control-data verification (`verify_equibop` in `scripts/deb-common.sh`); a mismatch no longer leaves the file in `out/`. `update-equibop.sh` also refuses to re-pin a changed release.
-- Debian: new `deb/package-sources.conf` (single list of repo-built, upstream-mirrored and `contrib` packages) read by `gen.py`, build, check and publish. Metapackage descriptions now say where non-default dependencies come from. Dependencies themselves are unchanged (all hard `Depends`).
-- `scripts/enable-steam-prereqs.sh` rewritten: edits only entries APT reports as the Debian/Devuan archive (it used to append components to every `.sources` file and every `main` line, third-party repositories included), handles one-line and deb822 formats in any file, backs up, shows a diff, `--dry-run`, verifies candidates. `contrib` + i386 by default; `non-free` only with `--non-free`.
-- `scripts/check-deps.sh` rewritten: classifies every dependency (Debian main/contrib, ReedMuhn repo, local `out/`, virtual), handles alternatives and `Provides`, checks standalone package dependencies, and finishes with `apt-get -s install` of everything in `out/`. Nothing is skipped.
-- `scripts/setup-apt-repo.sh`: validates the key, optional `REEDMUHN_KEY_FPR` pin, post-update check that packages are visible. `scripts/publish-forgejo.sh`: credential help, `--dry-run`, preflight (arch, Equibop pin, metapackage completeness), token kept off the command line, index verification afterwards.
-- CI: validation uses the real `enable-steam-prereqs.sh` and `check-deps.sh`, lints the Debian scripts; new automatic `publish-deb.yml` (push, weekly, manual).
-- `scripts/test-deb.sh` now tests the build opt-outs, Equibop verification, the Steam helper and publishing (mock Forgejo) offline.
-- New Forgejo workflow `update-equibop.yml` (every 4 hours and on demand): checks for a newer Equibop release, publishes the amd64 `.deb` to the registry, and commits the new pin. Needs the `FORGEJO_TOKEN` repository secret (`write:package`).
-- `scripts/update-equibop.sh` skips the download when already current, can copy the `.deb` to `EQUIBOP_ARTIFACT_DIR`, honours `EQUIBOP_SKIP_GENTOO=1`, and no longer writes broken quoting into the generated Gentoo ebuild.
-- Docs: metapackage table now lists Equibop and Steam; Debian/Devuan build-dependency lists include `python3`, `curl` and `libxext-dev`.
-
-## 1.0.4
-- Debian/Devuan: `wmvol` and `wmmedia` now have native packages built from `dockapps-collection` (`deb/hosted/`), so `reedmuhn-wmaker` includes them. Gentoo mappings added for the existing ebuilds.
-- Hosted source builds are now pinnable: `WM_DESKTOP_REF` and `DOCKAPPS_REF` (set with `scripts/update-pins.sh`). Package versions are stamped `<base>+git<date>.<sha>-1`, so different upstream code never reuses a version. Unpinned builds still work but warn.
-- `bootstrap.sh`, `check-deps.sh` and CI updated for the new packages; docs synchronised (Equibop/Steam are metapackage dependencies, audit document brought up to 1.0.4).
-
 ## 1.0.3
 - `reedmuhn-desktop` now depends on `equibop` (served from the ReedMuhn APT repository; `bootstrap.sh` uses the local build when present).
 - `reedmuhn-gaming` now depends on `steam-installer` from the official Debian/Devuan repositories (also `steam` on Arch, `games-util/steam-launcher` on Gentoo).

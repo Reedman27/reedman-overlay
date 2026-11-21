@@ -36,5 +36,5 @@ Live (9999) ebuilds for the dockapps in [dockapps-collection](https://github.com
 ## Debian, Devuan and other distro packaging
 
 The same repository holds the ReedMuhn packaging for other distributions (`deb/`, `arch/`, `rpm/`, `void/`, ...).
-Debian and Devuan are the supported targets. To install: `./bootstrap.sh base wmaker gaming` (adds the repo once, then a normal `apt install`). See [docs/reedmuhn.md](docs/reedmuhn.md).
+Debian and Devuan are the supported targets. See [docs/reedmuhn.md](docs/reedmuhn.md).
 CI runs on Forgejo Actions (`.forgejo/workflows/validate.yml`).

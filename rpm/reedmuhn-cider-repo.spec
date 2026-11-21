@@ -26,5 +26,5 @@ rpm --import %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-cider || :
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-cider
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - 1.0.0-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 1.0.0-1
 - Initial repo package

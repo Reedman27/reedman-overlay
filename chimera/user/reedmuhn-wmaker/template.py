@@ -1,9 +1,9 @@
 pkgname = "reedmuhn-wmaker"
-pkgver = "1.0.4"
+pkgver = "1.0.3"
 pkgrel = 0
 metapackage = True
 pkgdesc = "ReedMuhn Window Maker environment"
-maintainer = "Reedman27 <213130028+Reedman27@users.noreply.github.com>"
+maintainer = "Reedman27 <packages@reedmuhn.invalid>"
 license = "MIT"
 url = "https://github.com/Reedman27"
 depends = ["picom", "sxhkd"]

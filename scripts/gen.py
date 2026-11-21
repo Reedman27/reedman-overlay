@@ -31,20 +31,6 @@ def put(path, text):
     p.write_text(text)
 
 
-def deb_origins():
-    """deb/package-sources.conf -> {package: origin}. Packages not listed come from Debian main."""
-    out = {}
-    conf = ROOT / "deb" / "package-sources.conf"
-    for line in conf.read_text().splitlines():
-        line = line.split("#", 1)[0].split()
-        if len(line) >= 2:
-            out[line[0]] = line[1]
-    return out
-
-
-DEB_ORIGIN = deb_origins()
-
-
 def names(item, fam):
     return M["map"].get(item, {}).get(fam) or []
 
@@ -91,21 +77,10 @@ for meta, spec in M["metas"].items():
         c.append("Depends: " + ", ".join(dep))
     if soft:
         c.append("Recommends: " + ", ".join(soft))
-    # Say where each non-default dependency comes from, so `apt show` tells the truth.
-    from_repo = [d for d in hard if DEB_ORIGIN.get(d) in ("built", "upstream")]
-    from_contrib = [d for d in hard if DEB_ORIGIN.get(d, "").startswith("contrib")]
-    needs_i386 = [d for d in hard if DEB_ORIGIN.get(d) == "contrib+i386"]
     c += [f"Description: {summary}", " Metapackage: contains no files, only dependencies.",
           " .",
-          " Every dependency comes from the Debian archive"
-          + (", except as noted below." if (from_repo or from_contrib or needs_i386) else ".")]
-    if from_repo:
-        c += [" .", " Served by the ReedMuhn APT repository (scripts/setup-apt-repo.sh): " + ", ".join(from_repo) + "."]
-    if from_contrib:
-        c += [" .", " Needs the Debian contrib component: " + ", ".join(from_contrib) + "."]
-    if needs_i386:
-        c += [" .", " " + ", ".join(needs_i386) + " also needs the i386 architecture."
-              " Run scripts/enable-steam-prereqs.sh before installing."]
+          " Dependencies are resolved from the target distribution repositories.",
+          " Standalone applications are packaged separately and are not pulled in here."]
     if soft:
         c += [" .", " Cider is recommended from its upstream repository when available."]
     put(f"deb/{name}/DEBIAN/control", "\n".join(c) + "\n")
@@ -134,7 +109,7 @@ echo "{name} {VER}" > %{{buildroot}}%{{_docdir}}/{name}/VERSION
 %{{_docdir}}/{name}/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - {VER}-1
+* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - {VER}-1
 - Metapackage generated from meta.json
 """)
 
@@ -182,7 +157,7 @@ RDEPEND="
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>213130028+Reedman27@users.noreply.github.com</email>
+		<email>packages@reedmuhn.invalid</email>
 		<name>Reedman27</name>
 	</maintainer>
 	<longdescription>{summary}. Contains no files, only dependencies.</longdescription>

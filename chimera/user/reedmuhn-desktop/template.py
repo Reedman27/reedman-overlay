@@ -1,9 +1,9 @@
 pkgname = "reedmuhn-desktop"
-pkgver = "1.0.4"
+pkgver = "1.0.3"
 pkgrel = 0
 metapackage = True
 pkgdesc = "ReedMuhn desktop: general graphical applications"
-maintainer = "Reedman27 <213130028+Reedman27@users.noreply.github.com>"
+maintainer = "Reedman27 <packages@reedmuhn.invalid>"
 license = "MIT"
 url = "https://github.com/Reedman27"
 depends = ["thunar", "file-roller", "alacritty", "vlc", "pipewire", "wireplumber", "pavucontrol", "playerctl"]

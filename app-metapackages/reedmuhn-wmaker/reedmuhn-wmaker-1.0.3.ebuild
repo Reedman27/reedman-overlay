@@ -18,8 +18,6 @@ RDEPEND="
 	x11-misc/sxhkd
 	x11-plugins/wmclock
 	x11-plugins/wmmon
-	x11-plugins/wmmedia
-	x11-plugins/wmvol
 	x11-plugins/wmsystemtray
 	x11-base/xorg-server
 	x11-apps/xinit

@@ -29,9 +29,9 @@ Install only the groups you want; none of the groups pulls in another ReedMuhn m
 | Package | Contents |
 |---|---|
 | `reedmuhn-base` | Zsh, Fastfetch, tmux, doas, btop, Git |
-| `reedmuhn-desktop` | Thunar, File Roller, Alacritty, VLC, PipeWire, WirePlumber, pavucontrol, playerctl, Equibop |
-| `reedmuhn-wmaker` | Window Maker, wm-desktop, picom, sxhkd, wmclock, wmmon, wmvol, wmmedia, wmsystemtray, Xorg |
-| `reedmuhn-gaming` | Wine, Winetricks and Steam (Debian: `steam-installer`) |
+| `reedmuhn-desktop` | Thunar, File Roller, Alacritty, VLC, PipeWire, WirePlumber, pavucontrol, playerctl |
+| `reedmuhn-wmaker` | Window Maker, wm-desktop, picom, sxhkd, dockapps where packaged, Xorg |
+| `reedmuhn-gaming` | Wine and Winetricks |
 | `reedmuhn-networking` | NetworkManager, Samba, Podman, chrony (Tailscale installed separately) |
 | `reedmuhn-development` | Neovim, OpenJDK, ImageMagick, compiler/build tools |
 | `reedmuhn-cider` | Cider client (native Cider repo where configured; repackaged binary on Gentoo, Void and openSUSE) |
@@ -64,24 +64,80 @@ Install the relevant distro build tools first. All generated binaries go to `out
 ### Debian 13 / Devuan 6
 
 ```sh
-sudo apt install build-essential dpkg-dev debhelper git pkgconf python3 curl libx11-dev libxext-dev libxft-dev \
+sudo apt install build-essential dpkg-dev debhelper git pkgconf libx11-dev libxft-dev \
   libfontconfig-dev libdbus-1-dev libwraster-dev
 scripts/build-deb.sh
 ```
 
-The default build compiles `wm-desktop`, `wmvol` and `wmmedia` (pinned via `WM_DESKTOP_REF` / `DOCKAPPS_REF`; see `scripts/update-pins.sh`), mirrors Equibop after verifying its pinned SHA-256, and builds the core metapackages, so nothing a metapackage depends on is silently left out. `winetricks` and `steam-installer` come from Debian `contrib` (run `scripts/enable-steam-prereqs.sh`). Optional extras are opt-in:
+The default build compiles `wm-desktop` and builds the core metapackages. Enable Debian/Devuan `contrib` in APT sources for `winetricks`. Optional standalone packages are opt-in:
 
 ```sh
 MC_SHA256=<verified-sha256> BUILD_MINECRAFT=1 scripts/build-deb.sh
+BUILD_EQUIBOP=1 scripts/build-deb.sh
 ```
 
-Minecraft is an upstream binary mirror; do not publish it until its SHA-256 has been independently checked (`MC_SHA256`). Cider is opt-in because its upstream APT index has been unreliable; fetch and verify the upstream key before `BUILD_CIDER_REPO=1 scripts/build-deb.sh`. The opt-outs `BUILD_EQUIBOP=0`, `SKIP_WM_DESKTOP=1` and `SKIP_DOCKAPPS=1` exist for partial builds: a metapackage that needs an opted-out package is skipped rather than built uninstallable. See [debian-devuan.md](debian-devuan.md).
+Minecraft and Equibop are upstream binary mirrors; do not publish them until their SHA-256 values have been independently checked (`MC_SHA256` for Minecraft and `EQUIBOP_SHA256` for Equibop). Cider is opt-in because its upstream APT index has been unreliable; fetch and verify the upstream key before `BUILD_CIDER_REPO=1 scripts/build-deb.sh`. `SKIP_WM_DESKTOP=1` is available for building only metapackages, but the resulting Window Maker metapackage cannot be installed until the standalone `wm-desktop` package is available.
+
+Run the local structural test with `scripts/test-deb.sh`. CI additionally resolves dependencies in clean Debian Trixie and Devuan Excalibur containers.
+
+### Fedora
+
+```sh
+sudo dnf install rpm-build git curl binutils
+scripts/fetch-keys.sh
+rpm/build.sh
+```
+
+### openSUSE Tumbleweed
+
+```sh
+sudo zypper install rpm-build git curl binutils
+scripts/fetch-keys.sh
+opensuse/build.sh
+```
+
+The openSUSE spec files are separate from Fedora's because RPM package names and dependency names are not universally interchangeable.
+
+### Arch Linux
+
+```sh
+sudo pacman -S --needed base-devel git curl
+scripts/fetch-keys.sh
+arch/build.sh
+```
+
+### Gentoo
+
+This repository is itself the Portage overlay (`profiles/repo_name` is `reedman`). Add it with eselect-repository:
+
+```sh
+sudo eselect repository add reedman git https://serverhat.tail973a97.ts.net:8443/Reedman27/reedman-overlay.git
+sudo emaint sync -r reedman
+sudo ebuild /var/db/repos/reedman/net-im/equibop-bin/equibop-bin-$(cat EQUIBOP_VERSION).ebuild manifest
+sudo emerge --ask app-metapackages/reedmuhn-base net-im/equibop-bin
+```
+
+Live ebuilds (`x11-misc/wm-desktop`, `x11-plugins/wmvol`, `x11-plugins/wmmedia`) need Git and an entry in `package.accept_keywords`; see the top-level `README.md`.
+
+### Void Linux
+
+Clone the official `void-packages` tree and bootstrap it following the [Void package-building manual](https://github.com/void-linux/void-packages). Then:
+
+```sh
+VOID_PACKAGES_DIR="$HOME/void-packages" void/build.sh reedmuhn-base reedmuhn-wmaker equibop-bin
+cd "$HOME/void-packages"
+sudo xbps-install --repository=hostdir/binpkgs reedmuhn-base reedmuhn-wmaker equibop-bin
+```
+
+Build other metapackages by passing their `reedmuhn-*` names. Void templates are native XBPS source packages; they are not `.deb` packages installed directly by XBPS.
+
+## Equibop and Steam through the metapackages (Debian/Devuan)
 
 `reedmuhn-desktop` depends on `equibop` and `reedmuhn-gaming` depends on `steam-installer`, so one `apt install` fetches both:
 
-1. Publish (on your build machine): `scripts/build-deb.sh`, `scripts/check-deps.sh`, then `FORGEJO_USER=Reedman27 FORGEJO_TOKEN=... scripts/publish-forgejo.sh` (`--dry-run` first). The token needs the `write:package` scope. Forgejo signs the repository itself.
+1. Publish (on your build machine): `BUILD_EQUIBOP=1 scripts/build-deb.sh`, then `FORGEJO_USER=Reedman27 FORGEJO_TOKEN=... scripts/publish-forgejo.sh`. The token needs the `write:package` scope. Forgejo signs the repository itself.
 2. On each Debian/Devuan machine, once (it must be able to reach your Forgejo host): `sudo scripts/setup-apt-repo.sh`
-3. For Steam, once: `sudo scripts/enable-steam-prereqs.sh` (adds contrib and the i386 architecture, with backups; `bootstrap.sh gaming` does this for you).
+3. For Steam, once: `sudo scripts/enable-steam-prereqs.sh` (adds i386, contrib and non-free; `bootstrap.sh gaming` does this for you).
 4. `sudo apt install reedmuhn-desktop reedmuhn-gaming`
 
 The repository is Forgejo's Debian package registry: `https://serverhat.tail973a97.ts.net:8443/api/packages/Reedman27/debian`, distribution `reedmuhn`, component `main`. A package version can only be uploaded once, so bump `VERSION` for each republish.

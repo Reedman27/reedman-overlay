@@ -1,4 +1,4 @@
-# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+# Maintainer: Reedman27 <packages@reedmuhn.invalid>
 # UNTESTED. Plain Makefile, WITH_x switches, PREFIX/DESTDIR.
 pkgname=wm-desktop
 pkgver=0.1.0

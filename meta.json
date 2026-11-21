@@ -1,5 +1,5 @@
 {
-  "maintainer": "Reedman27 <213130028+Reedman27@users.noreply.github.com>",
+  "maintainer": "Reedman27 <packages@reedmuhn.invalid>",
   "homepage": "https://github.com/Reedman27",
   "metas": {
     "base": {
@@ -563,22 +563,8 @@
         "wmmon"
       ]
     },
-    "wmmedia": {
-      "deb": [
-        "wmmedia"
-      ],
-      "gentoo": [
-        "x11-plugins/wmmedia"
-      ]
-    },
-    "wmvol": {
-      "deb": [
-        "wmvol"
-      ],
-      "gentoo": [
-        "x11-plugins/wmvol"
-      ]
-    },
+    "wmmedia": {},
+    "wmvol": {},
     "wmsystemtray": {
       "deb": [
         "wmsystemtray"
@@ -968,8 +954,6 @@
     "wm-desktop",
     "minecraft-launcher-bin",
     "cider-bin",
-    "equibop-bin",
-    "wmmedia",
-    "wmvol"
+    "equibop-bin"
   ]
 }
