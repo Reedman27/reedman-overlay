@@ -57,8 +57,10 @@ jobs:
       - name: Validate metadata, generated files, and Chimera templates
         run: |
           python3 -m json.tool meta.json >/dev/null
-          bash -n bootstrap.sh install.sh scripts/*.sh rpm/*.sh arch/*.sh opensuse/*.sh void/*.sh
-          for f in arch/*/PKGBUILD; do bash -n "$f"; done
+          shopt -s nullglob
+          for f in bootstrap.sh install.sh scripts/*.sh rpm/*.sh arch/*.sh opensuse/*.sh void/*.sh arch/*/PKGBUILD; do
+            bash -n "$f"
+          done
           scripts/test-chimera.sh
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           python3 scripts/gen.py
