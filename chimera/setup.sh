@@ -43,6 +43,7 @@ cd "$CPORTS"
 # 3. signing key (once) and build
 [ -f etc/config.ini ] || cp etc/config.ini.example etc/config.ini
 ls etc/keys/*.rsa >/dev/null 2>&1 || ./cbuild keygen
+command -v ruff >/dev/null 2>&1 || { echo "installing ruff (needed by cbuild lint)"; doas apk add ruff || sudo apk add ruff; }
 [ -d masterdir ] || ./cbuild binary-bootstrap
 for p in "$@"; do
   ./cbuild lint "user/$p"
