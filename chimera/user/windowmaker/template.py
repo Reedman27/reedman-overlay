@@ -37,6 +37,9 @@ license = "GPL-2.0-or-later"
 url = "https://www.windowmaker.org"
 source = f"https://github.com/window-maker/wmaker/releases/download/wmaker-{pkgver}/WindowMaker-{pkgver}.tar.gz"
 sha256 = "4fe130ba23cf4aa21c156ec8f01f748df537d0604ec06c6bbcec896df1926f6d"
+# util/wmiv includes <WINGs/WINGsP.h>, which configure generates into the build
+# dir, but upstream's wmiv_CFLAGS has no -I for it (breaks out-of-tree builds)
+tool_flags = {"CFLAGS": [f"-I/builddir/{pkgname}-{pkgver}/wrksrc/build/WINGs"]}
 # the only tests are interactive X programs; they need a running display
 # etcfiles: global defaults are installed to /etc/WindowMaker
 options = ["!check", "etcfiles"]
