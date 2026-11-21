@@ -10,6 +10,7 @@ make_build_args = ["PREFIX=/usr"]
 make_install_args = ["PREFIX=/usr"]
 hostmakedepends = ["pkgconf"]
 makedepends = [
+    "freetype-devel",
     "libx11-devel",
     "libxext-devel",
     "libxft-devel",
@@ -21,6 +22,8 @@ url = "https://github.com/Reedman27/dockapps-collection"
 source = f"{url}/archive/{_commit}.tar.gz"
 # filled in by scripts/pin-chimera.sh (needs network access to github.com)
 sha256 = "0aca4b2bb2caacf88f0e975bb59515052981b3ad8af7b38dbb53eca4bfbfd4b8"
+# Xft.h includes <ft2build.h>; cbuild's CFLAGS override drops the Makefile's freetype flags
+tool_flags = {"CFLAGS": ["-I/usr/include/freetype2"]}
 # the tests start Xvfb and fake players; not available in the build container
 options = ["!check"]
 

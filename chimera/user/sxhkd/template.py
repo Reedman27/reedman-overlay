@@ -7,6 +7,7 @@ make_install_args = ["PREFIX=/usr", "MANPREFIX=/usr/share/man"]
 hostmakedepends = ["pkgconf"]
 makedepends = [
     "libxcb-devel",
+    "xcb-util-devel",
     "xcb-util-keysyms-devel",
 ]
 pkgdesc = "Simple X hotkey daemon"
