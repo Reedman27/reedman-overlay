@@ -1,9 +1,8 @@
 pkgname = "reedmuhn-base"
-pkgver = "1.0.3"
+pkgver = "1.0.4"
 pkgrel = 0
-metapackage = True
+build_style = "meta"
+depends = ["zsh", "fastfetch", "tmux", "opendoas", "btop", "git"]
 pkgdesc = "ReedMuhn base: command-line environment"
-maintainer = "Reedman27 <packages@reedmuhn.invalid>"
-license = "MIT"
+license = "custom:meta"
 url = "https://github.com/Reedman27"
-depends = ["zsh", "fastfetch", "tmux", "doas", "btop", "git"]

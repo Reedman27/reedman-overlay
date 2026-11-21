@@ -1,9 +1,8 @@
 pkgname = "reedmuhn-gaming"
-pkgver = "1.0.3"
+pkgver = "1.0.4"
 pkgrel = 0
-metapackage = True
+build_style = "meta"
+depends = ["wine-staging", "winetricks"]
 pkgdesc = "ReedMuhn gaming and Windows compatibility"
-maintainer = "Reedman27 <packages@reedmuhn.invalid>"
-license = "MIT"
+license = "custom:meta"
 url = "https://github.com/Reedman27"
-depends = []

@@ -1,12 +1,13 @@
 Package: reedmuhn-wmaker
-Version: 1.0.3
+Version: 1.0.4
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <packages@reedmuhn.invalid>
-Depends: wmaker, wm-desktop, picom, sxhkd, wmclock, wmmon, wmsystemtray, xorg
+Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+Depends: wmaker, wm-desktop, picom, sxhkd, wmclock, wmmon, wmmedia, wmvol, wmsystemtray, xorg
 Description: ReedMuhn Window Maker environment
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive, except as noted below.
+ .
+ Built by this repository (scripts/build-deb.sh): wm-desktop, wmmedia, wmvol.

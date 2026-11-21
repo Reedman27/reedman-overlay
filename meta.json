@@ -1,5 +1,5 @@
 {
-  "maintainer": "Reedman27 <packages@reedmuhn.invalid>",
+  "maintainer": "Reedman27 <213130028+Reedman27@users.noreply.github.com>",
   "homepage": "https://github.com/Reedman27",
   "metas": {
     "base": {
@@ -182,7 +182,7 @@
         "app-admin/doas"
       ],
       "chimera": [
-        "doas"
+        "opendoas"
       ],
       "alpine": [
         "doas"
@@ -461,6 +461,9 @@
       ],
       "void": [
         "WindowMaker"
+      ],
+      "chimera": [
+        "windowmaker"
       ]
     },
     "wm-desktop": {
@@ -480,6 +483,9 @@
         "wm-desktop"
       ],
       "void": [
+        "wm-desktop"
+      ],
+      "chimera": [
         "wm-desktop"
       ]
     },
@@ -542,9 +548,6 @@
       "gentoo": [
         "x11-plugins/wmclock"
       ],
-      "opensuse": [
-        "wmclock"
-      ],
       "void": [
         "wmclock"
       ]
@@ -556,24 +559,44 @@
       "gentoo": [
         "x11-plugins/wmmon"
       ],
-      "opensuse": [
-        "wmmon"
-      ],
       "void": [
         "wmmon"
       ]
     },
-    "wmmedia": {},
-    "wmvol": {},
+    "wmmedia": {
+      "deb": [
+        "wmmedia"
+      ],
+      "gentoo": [
+        "x11-plugins/wmmedia"
+      ],
+      "chimera": [
+        "wmmedia"
+      ],
+      "opensuse": [
+        "wmmedia"
+      ]
+    },
+    "wmvol": {
+      "deb": [
+        "wmvol"
+      ],
+      "gentoo": [
+        "x11-plugins/wmvol"
+      ],
+      "chimera": [
+        "wmvol"
+      ],
+      "opensuse": [
+        "wmvol"
+      ]
+    },
     "wmsystemtray": {
       "deb": [
         "wmsystemtray"
       ],
       "gentoo": [
         "x11-plugins/wmsystemtray"
-      ],
-      "opensuse": [
-        "wmsystemtray"
       ],
       "void": [
         "wmsystemtray"
@@ -606,6 +629,12 @@
       "void": [
         "xorg-server",
         "xinit"
+      ],
+      "chimera": [
+        "xserver-xorg-minimal",
+        "xserver-xorg-input-libinput",
+        "xinit",
+        "mesa-dri"
       ]
     },
     "wine": {
@@ -626,6 +655,9 @@
       ],
       "void": [
         "wine"
+      ],
+      "chimera": [
+        "wine-staging"
       ]
     },
     "winetricks": {
@@ -645,6 +677,9 @@
         "winetricks"
       ],
       "void": [
+        "winetricks"
+      ],
+      "chimera": [
         "winetricks"
       ]
     },
@@ -842,6 +877,9 @@
       ],
       "void": [
         "openjdk21"
+      ],
+      "chimera": [
+        "openjdk21-jdk"
       ]
     },
     "imagemagick": {
@@ -895,6 +933,9 @@
         "make"
       ],
       "void": [
+        "base-devel"
+      ],
+      "chimera": [
         "base-devel"
       ]
     },
@@ -954,6 +995,9 @@
     "wm-desktop",
     "minecraft-launcher-bin",
     "cider-bin",
-    "equibop-bin"
+    "equibop-bin",
+    "wmmedia",
+    "wmvol",
+    "rustcord"
   ]
 }

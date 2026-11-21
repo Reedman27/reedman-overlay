@@ -26,5 +26,5 @@ org.freedesktop.Notifications. Run wm-autostart install to start wmmenud and wmn
 %{_prefix}/*
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - 0.1.0-1
+* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - 0.1.0-1
 - Initial package

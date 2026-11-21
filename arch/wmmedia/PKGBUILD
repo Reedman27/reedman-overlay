@@ -1,0 +1,28 @@
+# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+pkgname=wmmedia-git
+pkgver=0
+pkgrel=1
+pkgdesc='Media player dockapp (MPRIS) for Window Maker'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Reedman27/dockapps-collection'
+license=('MIT')
+depends=('libx11' 'libxext' 'playerctl')
+makedepends=('git' 'pkgconf')
+provides=('wmmedia')
+conflicts=('wmmedia')
+source=("git+https://github.com/Reedman27/dockapps-collection.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd dockapps-collection
+	printf '0.r%s.g%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	make -C dockapps-collection/wmmedia PREFIX=/usr
+}
+
+package() {
+	make -C dockapps-collection/wmmedia PREFIX=/usr DESTDIR="$pkgdir" install
+	install -Dm644 dockapps-collection/wmmedia/LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

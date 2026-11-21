@@ -11,24 +11,19 @@ package name that could not be confirmed.
 ## reedmuhn-desktop
 - `equibop`: chimera, alpine
 
-## reedmuhn-development
-- `openjdk`: chimera
-- `build-tools`: chimera
-
 ## reedmuhn-gaming
 - `steam`: rpm, opensuse, chimera, alpine, void
-- `wine`: chimera, alpine
-- `winetricks`: chimera, alpine
+- `wine`: alpine
+- `winetricks`: alpine
 
 ## reedmuhn-networking
 - `tailscale`: deb
 
 ## reedmuhn-wmaker
-- `wmmedia`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
-- `wmvol`: deb, rpm, opensuse, arch, gentoo, chimera, alpine, void
-- `wmclock`: rpm, arch, chimera, alpine
-- `wmmon`: rpm, arch, chimera, alpine
-- `wmsystemtray`: rpm, arch, chimera, alpine
-- `windowmaker`: chimera, alpine
-- `wm-desktop`: chimera, alpine
-- `xorg`: chimera
+- `wmclock`: rpm, opensuse, arch, chimera, alpine
+- `wmmon`: rpm, opensuse, arch, chimera, alpine
+- `wmmedia`: rpm, arch, alpine, void
+- `wmvol`: rpm, arch, alpine, void
+- `wmsystemtray`: rpm, opensuse, arch, chimera, alpine
+- `windowmaker`: alpine
+- `wm-desktop`: alpine

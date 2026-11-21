@@ -1,0 +1,42 @@
+# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+# Qt WebEngine frontend (rustcord-qt). The CEF frontend is not packaged here.
+pkgname=rustcord-git
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Rust desktop client for the official Discord web app (Qt WebEngine)'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Reedman27/rustcord'
+license=('LGPL-3.0-or-later')
+depends=('qt6-base' 'qt6-webengine' 'dbus' 'hicolor-icon-theme')
+makedepends=('git' 'cargo' 'pkgconf')
+provides=('rustcord')
+conflicts=('rustcord')
+source=("git+https://github.com/Reedman27/rustcord.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd rustcord
+	printf '0.1.0.r%s.g%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+prepare() {
+	cd rustcord
+	export RUSTUP_TOOLCHAIN=stable
+	cargo fetch --locked --target "$(rustc -vV | sed -n 's/host: //p')"
+}
+
+build() {
+	cd rustcord
+	export RUSTUP_TOOLCHAIN=stable CARGO_TARGET_DIR=target
+	cargo build --release --frozen -p rustcord-qt
+	cargo run --release --frozen -q -p rustcord-core --example dump -- png 256 > rustcord.png
+}
+
+package() {
+	cd rustcord
+	install -Dm755 target/release/rustcord-qt "$pkgdir/usr/bin/rustcord-qt"
+	ln -s rustcord-qt "$pkgdir/usr/bin/rustcord"
+	install -Dm644 packaging/rustcord.desktop "$pkgdir/usr/share/applications/rustcord.desktop"
+	install -Dm644 rustcord.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/rustcord.png"
+	install -Dm644 COPYING.LESSER -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

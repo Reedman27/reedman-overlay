@@ -4,9 +4,9 @@
 pkgname = "cider"
 pkgver = "4.0.17"
 pkgrel = 0
+broken = "Prebuilt Cider is a glibc Electron package and has not been adapted for Chimera musl."
 archs = ["x86_64"]
 pkgdesc = "Apple Music client by Cider Collective (prebuilt binary)"
-maintainer = "Reedman27 <packages@reedmuhn.invalid>"
 license = "custom:proprietary"
 url = "https://cider.sh"
 _deb = f"cider-v{pkgver}-linux-x64.deb"

@@ -1,12 +1,15 @@
 Package: reedmuhn-gaming
-Version: 1.0.3
+Version: 1.0.4
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 Depends: wine, winetricks, steam-installer
 Description: ReedMuhn gaming and Windows compatibility
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive, except as noted below.
+ .
+ Needs the Debian contrib component: winetricks, steam-installer.
+ .
+ steam-installer also needs the i386 architecture. Run scripts/enable-steam-prereqs.sh before installing.

@@ -1,0 +1,77 @@
+name: ReedMuhn CI (Debian + Devuan + metadata)
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'deb/**'
+      - 'chimera/**'
+      - 'meta.json'
+      - 'VERSION'
+      - 'EQUIBOP_*'
+      - '*_REF'
+      - 'scripts/**'
+      - 'arch/**'
+      - 'rpm/**'
+      - 'opensuse/**'
+      - 'void/**'
+      - 'app-metapackages/**'
+      - 'bootstrap.sh'
+      - 'install.sh'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/update-equibop.yml'
+  pull_request:
+    paths:
+      - 'deb/**'
+      - 'chimera/**'
+      - 'meta.json'
+      - 'VERSION'
+      - 'EQUIBOP_*'
+      - '*_REF'
+      - 'scripts/**'
+      - 'arch/**'
+      - 'rpm/**'
+      - 'opensuse/**'
+      - 'void/**'
+      - 'app-metapackages/**'
+      - 'bootstrap.sh'
+      - 'install.sh'
+      - '.github/workflows/ci.yml'
+      - '.github/workflows/update-equibop.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reedmuhn-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate metadata, generated files, and Chimera templates
+        run: |
+          python3 -m json.tool meta.json >/dev/null
+          bash -n bootstrap.sh install.sh scripts/*.sh rpm/*.sh arch/*.sh opensuse/*.sh void/*.sh
+          for f in arch/*/PKGBUILD; do bash -n "$f"; done
+          scripts/test-chimera.sh
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          python3 scripts/gen.py
+          git diff --exit-code
+
+      - name: Build on Debian and test dependency resolution on Debian and Devuan
+        run: scripts/test-debian-devuan.sh
+
+      - name: Upload Debian packages (main-branch pushes only)
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+        uses: actions/upload-artifact@v4
+        with:
+          name: reedmuhn-debian-packages
+          path: out/*.deb
+          if-no-files-found: error
+          retention-days: 7

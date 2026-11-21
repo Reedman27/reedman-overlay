@@ -1,10 +1,10 @@
 # Template file for 'reedmuhn-networking'
 pkgname=reedmuhn-networking
-version=1.0.3
+version=1.0.4
 revision=1
 metapackage=yes
 short_desc="ReedMuhn networking and self-hosting"
-maintainer="Reedman27 <packages@reedmuhn.invalid>"
+maintainer="Reedman27 <213130028+Reedman27@users.noreply.github.com>"
 license=MIT
 homepage=https://github.com/Reedman27
 depends="NetworkManager tailscale samba podman chrony"

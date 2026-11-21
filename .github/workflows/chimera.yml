@@ -1,0 +1,107 @@
+name: Chimera cports (lint + real cbuild)
+
+# Builds the templates in chimera/user for real, inside cbuild's own bubblewrap sandbox,
+# the same way cports' CI does. Needs a runner with user namespaces (ubuntu-24.04 + the
+# apparmor sysctls below).
+on:
+  push:
+    branches: [main, master]
+    paths: ['chimera/**', 'scripts/*chimera*', '.github/workflows/chimera.yml']
+  pull_request:
+    paths: ['chimera/**', 'scripts/*chimera*', '.github/workflows/chimera.yml']
+  workflow_dispatch:
+    inputs:
+      with_rustcord:
+        description: 'Also build rustcord (Qt WebEngine devel + Rust; slow)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chimera-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cbuild:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Decide whether to build rustcord (slow, so only when asked or when its template changed)
+        id: rc
+        run: |
+          build=false
+          if [ "${{ github.event_name }}" = workflow_dispatch ] && [ "${{ inputs.with_rustcord }}" = true ]; then build=true; fi
+          if [ "${{ github.event_name }}" = push ] && git diff --name-only HEAD^ HEAD -- chimera/user/rustcord 2>/dev/null | grep -q .; then build=true; fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
+      - name: Disable apparmor user-namespace restrictions
+        run: |
+          sudo sysctl kernel.apparmor_restrict_unprivileged_unconfined=0
+          sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y python3 python3-pip ca-certificates openssl git bubblewrap wget curl
+          python3 -m pip install ruff --break-system-packages
+
+      - name: Check upstream checksums, pin any placeholder
+        run: |
+          scripts/pin-chimera.sh          # fills all-zero placeholders (kept for the build, see artifact)
+          scripts/pin-chimera.sh --check  # every template must now match upstream
+          git diff -- chimera > "$RUNNER_TEMP/chimera-pins.diff" || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chimera-pins
+          path: ${{ runner.temp }}/chimera-pins.diff
+          if-no-files-found: ignore
+
+      - name: Fetch cports
+        run: git clone --depth 1 https://github.com/chimera-linux/cports "$GITHUB_WORKSPACE/cports"
+
+      - name: Install templates
+        run: |
+          cp -a chimera/user/. "$GITHUB_WORKSPACE/cports/user/"
+          CHIMERA_STRICT=1 CPORTS="$GITHUB_WORKSPACE/cports" scripts/test-chimera.sh
+
+      - name: Set up cbuild
+        working-directory: ${{ github.workspace }}/cports
+        run: sh .ci/setup-cbuild.sh
+
+      - name: ruff (cports formatting rules) and cbuild lint
+        working-directory: ${{ github.workspace }}/cports
+        run: |
+          ruff check user/windowmaker user/wm-desktop user/wmvol user/wmmedia user/sxhkd user/rustcord
+          ruff format --diff --quiet user/windowmaker user/wm-desktop user/wmvol user/wmmedia user/sxhkd user/rustcord
+          for p in windowmaker wm-desktop wmvol wmmedia sxhkd rustcord reedmuhn-base reedmuhn-desktop reedmuhn-wmaker reedmuhn-gaming reedmuhn-networking reedmuhn-development; do
+            python3 cbuild lint "user/$p"
+          done
+          python3 cbuild relink-subpkgs
+          test -z "$(git status --short user | grep -v '^??')"
+
+      - name: Build packages (windowmaker first, wm-desktop needs its devel package)
+        working-directory: ${{ github.workspace }}/cports
+        run: |
+          for p in windowmaker wm-desktop wmvol wmmedia sxhkd reedmuhn-base reedmuhn-wmaker; do
+            python3 cbuild pkg "user/$p"
+          done
+
+      - name: Build rustcord
+        if: steps.rc.outputs.build == 'true'
+        working-directory: ${{ github.workspace }}/cports
+        run: python3 cbuild pkg user/rustcord
+
+      - name: Upload the built apks
+        uses: actions/upload-artifact@v4
+        with:
+          name: chimera-apks
+          path: ${{ github.workspace }}/cports/packages/user/**/*.apk
+          if-no-files-found: error
+          retention-days: 14

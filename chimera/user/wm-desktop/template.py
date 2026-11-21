@@ -1,19 +1,36 @@
-# UNTESTED. Mirrors the Gentoo ebuild: plain Makefile, WITH_x switches, PREFIX/DESTDIR.
-# libwraster comes from Window Maker, which cports does not package, so WITH_WRASTER=no.
-# TODO: point source at a real tag/commit and fill sha256 (cbuild prints the expected hash).
 pkgname = "wm-desktop"
-pkgver = "0.1.0"
+# Upstream has no tagged releases yet, so this pins a commit of `main`
+# (move it forward with scripts/pin-chimera.sh --force wm-desktop after editing _commit).
+_commit = "097f77e97086b9383b7c70ae2c7dd5f8fed9bb92"
+pkgver = "0.0.20261118"
 pkgrel = 0
 build_style = "makefile"
-make_build_args = ["PREFIX=/usr", "WITH_FILES=yes", "WITH_NOTIFY=yes", "WITH_WRASTER=no"]
-make_install_args = ["PREFIX=/usr", "WITH_FILES=yes", "WITH_NOTIFY=yes", "WITH_WRASTER=no"]
-make_check_target = "check"
+make_build_args = [
+    "WITH_FILES=yes",
+    "WITH_NOTIFY=yes",
+    "WITH_WRASTER=yes",
+]
+# plain Makefile; its install target honours PREFIX and DESTDIR
+make_install_args = list(make_build_args)
 hostmakedepends = ["pkgconf"]
-makedepends = ["libx11-devel", "libxft-devel", "fontconfig-devel", "dbus-devel"]
+makedepends = [
+    "dbus-devel",
+    "fontconfig-devel",
+    "libx11-devel",
+    "libxft-devel",
+    # libwraster (wrlib.pc) is built by the windowmaker template
+    "windowmaker-devel",
+]
+depends = ["windowmaker"]
 pkgdesc = "Add-ons for Window Maker: notifications, file browser, menus"
-maintainer = "Reedman27 <packages@reedmuhn.invalid>"
 license = "MIT"
 url = "https://github.com/Reedman27/wm-desktop"
-source = f"{url}/archive/refs/tags/v{pkgver}.tar.gz"
-sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
-options = ["!check"]  # tests need Xvfb and a private D-Bus
+source = f"{url}/archive/{_commit}.tar.gz"
+# filled in by scripts/pin-chimera.sh (needs network access to github.com)
+sha256 = "7c6e37b4d0a6a9af885fde9ca12bad294a641c562aa77bdb53d71fdeb0e85851"
+# the tests start Xvfb, xdotool and a private D-Bus; not in the build container
+options = ["!check"]
+
+
+def post_install(self):
+    self.install_license("LICENSE")

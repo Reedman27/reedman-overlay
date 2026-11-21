@@ -1,0 +1,41 @@
+name: Weekly Equibop update check
+
+on:
+  schedule:
+    - cron: '23 5 * * 1'  # Weekly: one scheduled check, not six per day
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-equibop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends curl dpkg
+      - name: Update pinned upstream version when a new release exists
+        env:
+          EQUIBOP_SKIP_GENTOO: '1'
+          EQUIBOP_ARTIFACT_DIR: ${{ runner.temp }}/equibop
+        run: scripts/update-equibop.sh
+      - name: Open a pull request for the updated pin
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-equibop
+          delete-branch: true
+          commit-message: 'chore: update Equibop release pin'
+          title: 'chore: update Equibop release pin'
+          body: |
+            This automated update checks the latest upstream Equibop release, verifies the downloaded Debian package metadata,
+            computes its SHA-256, and updates the repository's package pins.
+          add-paths: |
+            EQUIBOP_VERSION
+            EQUIBOP_SHA256
+            arch/equibop-bin/PKGBUILD
+            void/srcpkgs/equibop-bin/template
+            rpm/equibop-bin.spec
+            opensuse/equibop-bin.spec

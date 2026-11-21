@@ -1,6 +1,6 @@
-# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 pkgname=reedmuhn-networking
-pkgver=1.0.3
+pkgver=1.0.4
 pkgrel=1
 pkgdesc="ReedMuhn networking and self-hosting"
 arch=('any')

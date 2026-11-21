@@ -1,4 +1,4 @@
-# Maintainer: Reedman27 <packages@reedmuhn.invalid>
+# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 # UNTESTED. Unpacks Mojang's .deb so pacman manages the files. The URL is unversioned:
 # when Mojang ships an update, makepkg's source changes under you (checksums are SKIP).
 pkgname=minecraft-launcher-bin

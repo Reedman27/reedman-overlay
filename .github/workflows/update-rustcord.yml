@@ -1,0 +1,60 @@
+name: Weekly Rustcord pin update
+
+# Keeps chimera/user/rustcord (and RUSTCORD_REF) on the newest commit of Reedman27/rustcord.
+# Cheap by design: one short job on a standard free runner, once a week, and it exits in a
+# few seconds when nothing changed. The expensive Qt WebEngine build is NOT run here.
+on:
+  schedule:
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-rustcord
+  cancel-in-progress: false
+
+jobs:
+  update-rustcord:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Is there a newer rustcord commit?
+        id: check
+        run: |
+          new="$(git ls-remote https://github.com/Reedman27/rustcord.git HEAD | cut -f1)"
+          old="$(tail -n1 RUSTCORD_REF)"
+          echo "new=$new" >> "$GITHUB_OUTPUT"
+          if [ -z "$new" ]; then echo "could not resolve rustcord HEAD (private repo?)" >&2; exit 1; fi
+          if [ "$new" = "$old" ]; then echo "up to date at $old"; echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Bump the pin and the source checksum
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          scripts/update-pins.sh rustcord
+          scripts/pin-chimera.sh --force rustcord
+          CHIMERA_STRICT=1 scripts/test-chimera.sh
+
+      - name: Open a pull request
+        if: steps.check.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: automation/update-rustcord
+          delete-branch: true
+          commit-message: 'chore: bump rustcord to ${{ steps.check.outputs.new }}'
+          title: 'chore: bump rustcord to ${{ steps.check.outputs.new }}'
+          body: |
+            Automated: moves the pinned rustcord commit (`RUSTCORD_REF` and the Chimera cport) to
+            `${{ steps.check.outputs.new }}` and re-pins the source SHA-256.
+
+            Pull requests opened with the default `GITHUB_TOKEN` do not start other workflows.
+            To test-build the cport before merging, run **Actions > Chimera cports > Run workflow**
+            on branch `automation/update-rustcord` with *with_rustcord* ticked.
+          add-paths: |
+            RUSTCORD_REF
+            chimera/user/rustcord/template.py

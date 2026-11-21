@@ -1,0 +1,31 @@
+# Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
+pkgname=wmvol-git
+pkgver=0
+pkgrel=1
+pkgdesc='PipeWire volume dockapp for Window Maker'
+arch=('x86_64' 'aarch64')
+url='https://github.com/Reedman27/dockapps-collection'
+license=('MIT')
+depends=('libx11' 'libxext' 'libxft' 'wireplumber')
+makedepends=('git' 'pkgconf')
+provides=('wmvol')
+conflicts=('wmvol')
+source=("git+https://github.com/Reedman27/dockapps-collection.git")
+sha256sums=('SKIP')
+
+pkgver() {
+	cd dockapps-collection
+	printf '0.r%s.g%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+	# flags via the environment: on the make command line they would drop the pkg-config flags
+	export CFLAGS LDFLAGS
+	make -C dockapps-collection/wmvol PREFIX=/usr
+}
+
+package() {
+	export CFLAGS LDFLAGS
+	make -C dockapps-collection/wmvol PREFIX=/usr DESTDIR="$pkgdir" install
+	install -Dm644 dockapps-collection/wmvol/LICENSE -t "$pkgdir/usr/share/licenses/$pkgname/"
+}

@@ -31,6 +31,20 @@ def put(path, text):
     p.write_text(text)
 
 
+def deb_origins():
+    """deb/package-sources.conf -> {package: origin}. Packages not listed come from Debian main."""
+    out = {}
+    conf = ROOT / "deb" / "package-sources.conf"
+    for line in conf.read_text().splitlines():
+        line = line.split("#", 1)[0].split()
+        if len(line) >= 2:
+            out[line[0]] = line[1]
+    return out
+
+
+DEB_ORIGIN = deb_origins()
+
+
 def names(item, fam):
     return M["map"].get(item, {}).get(fam) or []
 
@@ -77,10 +91,21 @@ for meta, spec in M["metas"].items():
         c.append("Depends: " + ", ".join(dep))
     if soft:
         c.append("Recommends: " + ", ".join(soft))
+    # Say where each non-default dependency comes from, so `apt show` tells the truth.
+    from_repo = [d for d in hard if DEB_ORIGIN.get(d) in ("built", "upstream")]
+    from_contrib = [d for d in hard if DEB_ORIGIN.get(d, "").startswith("contrib")]
+    needs_i386 = [d for d in hard if DEB_ORIGIN.get(d) == "contrib+i386"]
     c += [f"Description: {summary}", " Metapackage: contains no files, only dependencies.",
           " .",
-          " Dependencies are resolved from the target distribution repositories.",
-          " Standalone applications are packaged separately and are not pulled in here."]
+          " Every dependency comes from the Debian archive"
+          + (", except as noted below." if (from_repo or from_contrib or needs_i386) else ".")]
+    if from_repo:
+        c += [" .", " Built by this repository (scripts/build-deb.sh): " + ", ".join(from_repo) + "."]
+    if from_contrib:
+        c += [" .", " Needs the Debian contrib component: " + ", ".join(from_contrib) + "."]
+    if needs_i386:
+        c += [" .", " " + ", ".join(needs_i386) + " also needs the i386 architecture."
+              " Run scripts/enable-steam-prereqs.sh before installing."]
     if soft:
         c += [" .", " Cider is recommended from its upstream repository when available."]
     put(f"deb/{name}/DEBIAN/control", "\n".join(c) + "\n")
@@ -109,7 +134,7 @@ echo "{name} {VER}" > %{{buildroot}}%{{_docdir}}/{name}/VERSION
 %{{_docdir}}/{name}/VERSION
 
 %changelog
-* Sun Nov 15 2026 Reedman27 <packages@reedmuhn.invalid> - {VER}-1
+* Sun Nov 15 2026 Reedman27 <213130028+Reedman27@users.noreply.github.com> - {VER}-1
 - Metapackage generated from meta.json
 """)
 
@@ -157,7 +182,7 @@ RDEPEND="
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>packages@reedmuhn.invalid</email>
+		<email>213130028+Reedman27@users.noreply.github.com</email>
 		<name>Reedman27</name>
 	</maintainer>
 	<longdescription>{summary}. Contains no files, only dependencies.</longdescription>
@@ -169,12 +194,11 @@ RDEPEND="
     put(f"chimera/user/{name}/template.py", f'''pkgname = "{name}"
 pkgver = "{VER}"
 pkgrel = 0
-metapackage = True
-pkgdesc = "{summary}"
-maintainer = "{MAINT}"
-license = "MIT"
-url = "https://github.com/Reedman27"
+build_style = "meta"
 depends = {json.dumps(hard)}
+pkgdesc = "{summary}"
+license = "custom:meta"
+url = "https://github.com/Reedman27"
 ''')
 
     # ---- alpine ----
@@ -222,4 +246,51 @@ for pkg, items in sorted(gaps.items()):
         lines.append(f"- `{item}`: {', '.join(fams)}")
     lines.append("")
 put("MAPPING-GAPS.md", "\n".join(lines))
+
+# Generate a human-readable inventory for the Chimera cports overlay.
+import ast
+chimera_entries = []
+for template_path in sorted((ROOT / "chimera" / "user").glob("*/template.py")):
+    tree = ast.parse(template_path.read_text(), filename=str(template_path))
+    values = {}
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+            try:
+                values[node.targets[0].id] = ast.literal_eval(node.value)
+            except Exception:
+                pass
+    chimera_entries.append((
+        values.get("pkgname", template_path.parent.name),
+        values.get("pkgver", "?"),
+        values.get("pkgdesc", ""),
+        values.get("broken"),
+        template_path.relative_to(ROOT).as_posix(),
+    ))
+index = [
+    "# ReedMuhn Chimera cports package index", "",
+    "This inventory describes the cports templates in this repository's `chimera/user/` tree. It is not the official Chimera APK index; packages enter the official index only after cports review, merge, and successful project builds.", "",
+    "| Package | Version | Status | Description |", "|---|---:|---|---|",
+]
+for pkg, ver, desc, broken, path in chimera_entries:
+    status = "blocked" if broken else "template"
+    index.append(f"| [`{pkg}`]({path}) | `{ver}` | {status} | {desc} |")
+index.extend([
+    "", "## Window Maker meta-package", "",
+    "`reedmuhn-wmaker` currently resolves to the following Chimera packages:", "",
+])
+wm_template = ROOT / "chimera" / "user" / "reedmuhn-wmaker" / "template.py"
+wm_values = {}
+for node in ast.parse(wm_template.read_text()).body:
+    if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+        try:
+            wm_values[node.targets[0].id] = ast.literal_eval(node.value)
+        except Exception:
+            pass
+for dep in wm_values.get("depends", []):
+    index.append(f"- `{dep}`")
+index.extend([
+    "", "## Not yet in the Chimera meta-package", "",
+    "`wmclock`, `wmmon` and `wmsystemtray` are not in cports yet and are left out of the Chimera meta-package. The hosted templates (`windowmaker`, `wm-desktop`, `wmvol`, `wmmedia`, `rustcord`) are separate packages: build them with `chimera/setup.sh` and install them next to the meta-package.",
+])
+put("chimera/INDEX.md", "\n".join(index) + "\n")
 print(f"generated {len(M['metas'])} metas ({', '.join(M['metas'])}) v{VER}; gaps in MAPPING-GAPS.md")

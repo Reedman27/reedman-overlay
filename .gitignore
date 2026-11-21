@@ -10,3 +10,6 @@
 *.tar.xz
 *.tar.zst
 *.log
+__pycache__/
+*.py[cod]
+.pytest_cache/

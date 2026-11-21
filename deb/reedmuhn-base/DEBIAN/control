@@ -1,12 +1,11 @@
 Package: reedmuhn-base
-Version: 1.0.3
+Version: 1.0.4
 Architecture: all
 Section: misc
 Priority: optional
-Maintainer: Reedman27 <packages@reedmuhn.invalid>
+Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
 Depends: zsh, fastfetch, tmux, opendoas, btop, git
 Description: ReedMuhn base: command-line environment
  Metapackage: contains no files, only dependencies.
  .
- Dependencies are resolved from the target distribution repositories.
- Standalone applications are packaged separately and are not pulled in here.
+ Every dependency comes from the Debian archive.
