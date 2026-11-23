@@ -1,8 +1,8 @@
 pkgname = "rustcord"
 # rustcord has no tagged releases yet; this pins a commit of `main`
 # (move it forward with scripts/update-pins.sh, then scripts/pin-chimera.sh --force rustcord).
-_commit = "820a799ab12edfdd5e20124926d3086262a3bdce"
-pkgver = "0.1.0.20261120"
+_commit = "33fe87ae0f0f5e4c660d8a2fabe8608dda8ec6e5"
+pkgver = "0.1.0.20261123"
 pkgrel = 0
 build_style = "cargo"
 make_build_args = ["-p", "rustcord-qt"]
@@ -20,7 +20,7 @@ url = "https://github.com/Reedman27/rustcord"
 source = f"{url}/archive/{_commit}.tar.gz"
 # filled in by scripts/pin-chimera.sh (needs network access to github.com;
 # a private repository needs a token, so make it public first)
-sha256 = "cf24b05e5020b2582b37b435b0d5bd5d1f6ffd73ea80d6fe08f305d4637856c9"
+sha256 = "a0f3b4b12aacb3c74d98c87eeb207c89a9550eecdb9d92b6e2c3b675d72e3627"
 # the tests need a display and a network connection
 options = ["!check"]
 
