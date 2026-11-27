@@ -1,7 +1,7 @@
 pkgname = "wm-desktop"
 # Upstream has no tagged releases yet, so this pins a commit of `main`
 # (move it forward with scripts/pin-chimera.sh --force wm-desktop after editing _commit).
-_commit = "6f318f05b521c0fcadf3d53969657c93c69f0201"
+_commit = "22f9e8ccb15ec9950335245458884d7c8199c362"
 pkgver = "0.0.20261127"
 pkgrel = 0
 build_style = "makefile"
@@ -31,7 +31,7 @@ license = "MIT"
 url = "https://github.com/Reedman27/wm-desktop"
 source = f"{url}/archive/{_commit}.tar.gz"
 # filled in by scripts/pin-chimera.sh (needs network access to github.com)
-sha256 = "280864d62ef15f0cfbcc3211a938969234d741965f83c6e630d5ba1920e675ca"
+sha256 = "08dd710532df225a820ef37da227820d9908c772761cd72fd8ac6319bf0e744f"
 # the tests start Xvfb, xdotool and a private D-Bus; not in the build container
 options = ["!check"]
 
