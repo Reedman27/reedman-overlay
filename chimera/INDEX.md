@@ -16,7 +16,7 @@ This inventory describes the cports templates in this repository's `chimera/user
 | [`sxhkd`](chimera/user/sxhkd/template.py) | `0.6.2` | template | Simple X hotkey daemon |
 | [`windowmaker`](chimera/user/windowmaker/template.py) | `0.96.0` | template | NeXTSTEP-inspired window manager for X11 |
 | [`windowmaker`](chimera/user/windowmaker-devel/template.py) | `0.96.0` | template | NeXTSTEP-inspired window manager for X11 |
-| [`wm-desktop`](chimera/user/wm-desktop/template.py) | `0.0.20261118` | template | Add-ons for Window Maker: notifications, file browser, menus |
+| [`wm-desktop`](chimera/user/wm-desktop/template.py) | `0.0.20261127` | template | Add-ons for Window Maker: notifications, file browser, media keys, menus |
 | [`wmmedia`](chimera/user/wmmedia/template.py) | `0.0.20261121` | template | Media-control dockapp for Window Maker |
 | [`wmvol`](chimera/user/wmvol/template.py) | `0.0.20261121` | template | PipeWire volume dockapp for Window Maker |
 

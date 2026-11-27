@@ -2,7 +2,7 @@ Source: wm-desktop
 Section: x11
 Priority: optional
 Maintainer: Reedman27 <213130028+Reedman27@users.noreply.github.com>
-Build-Depends: debhelper-compat (= 13), pkgconf, libx11-dev, libxft-dev, libfontconfig-dev, libdbus-1-dev, libwraster-dev
+Build-Depends: debhelper-compat (= 13), pkgconf, libx11-dev, libxft-dev, libfontconfig-dev, libdbus-1-dev, libwraster-dev, libxinerama-dev
 Standards-Version: 4.6.2
 Homepage: https://github.com/Reedman27/wm-desktop
 Rules-Requires-Root: no
@@ -10,10 +10,15 @@ Rules-Requires-Root: no
 Package: wm-desktop
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: wmaker
-Description: Add-ons for Window Maker: notifications, file browser, menus
+Recommends: wmaker, playerctl, brightnessctl, xdg-utils
+Suggests: mpc, wireplumber, pulseaudio-utils, alsa-utils
+Description: Add-ons for Window Maker: notifications, file browser, media keys, menus
  Notification daemon, file browser and menu tools for Window Maker, themed
  from your Window Maker theme. Only one notification daemon can own
  org.freedesktop.Notifications, so stop dunst/mako first.
  .
- Run wm-autostart install to start wmmenud and wmnotify with Window Maker.
+ wmmediakeys handles the volume, media, brightness and launcher keys with an
+ on-screen display in the same theme.
+ .
+ Run wm-autostart install to start wmmenud, wmnotify and wmmediakeys with
+ Window Maker.

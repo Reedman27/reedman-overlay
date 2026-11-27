@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- wm-desktop: pinned to `91859fd`, which adds `wmmediakeys` (volume, media, brightness and launcher keys with a themed on-screen display). Every recipe now builds it with `WITH_MEDIAKEYS=yes WITH_XINERAMA=yes` and adds libXinerama; Gentoo gets `+mediakeys` and `+xinerama` USE flags with `optfeature` hints, Arch `optdepends`, Fedora/openSUSE/Debian `Recommends: playerctl brightnessctl xdg-utils` (and `Suggests: mpc`). The runtime helpers stay optional everywhere. Chimera checksum re-pinned.
 - Easier to use: one-line `install.sh` (clones or updates the repo and runs `bootstrap.sh`), real `bootstrap.sh --help`, Arch builds only the packages you picked (`arch/build.sh <dirs>`) and installs the build tools for Rustcord, and a clear message instead of an empty `apt-get install` when Rustcord is requested on Debian/Devuan.
 - Rustcord: new `RUSTCORD_REF` pin and `scripts/update-pins.sh rustcord`; the weekly `update-rustcord.yml` workflow opens a PR when `Reedman27/rustcord` has new commits (free standard runners only). `chimera.yml` builds the rustcord cport on demand or when its template changes. The Chimera, Arch and openSUSE recipes no longer install a `COPYING` file, which upstream `main` does not ship (only `COPYING.LESSER`), so cbuild would have failed.
 - GitHub-only: removed the Forgejo/Tailscale publishing and APT-repo helpers (`publish-forgejo.sh`, `setup-apt-repo.sh`) and their tests. `bootstrap.sh` on Debian/Devuan now builds the `.deb` files from GitHub sources (or uses `--local`) like the other families.

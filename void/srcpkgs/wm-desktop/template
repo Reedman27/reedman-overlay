@@ -11,8 +11,9 @@ homepage="https://github.com/Reedman27/wm-desktop"
 distfiles="https://github.com/Reedman27/wm-desktop/archive/refs/heads/main.tar.gz"
 checksum="SKIP" # Replace with a pinned release archive checksum before publishing.
 hostmakedepends="pkg-config"
-makedepends="libX11-devel libXft-devel fontconfig-devel dbus-devel WindowMaker-devel"
-depends="WindowMaker libX11 libXft dbus-libs"
+makedepends="libX11-devel libXft-devel libXinerama-devel fontconfig-devel dbus-devel WindowMaker-devel"
+depends="WindowMaker libX11 libXft libXinerama dbus-libs"
+# wmmediakeys uses wpctl/pactl/amixer, playerctl or mpc, and brightnessctl when installed
 
-make_build_args="PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=auto"
+make_build_args="PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=auto"
 make_install_args="PREFIX=/usr"

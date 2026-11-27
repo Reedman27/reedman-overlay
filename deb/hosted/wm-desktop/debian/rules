@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # wm-desktop is a plain Makefile: PREFIX/DESTDIR and WITH_x=yes|no switches
-MK = PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes
+MK = PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=yes
 
 %:
 	dh $@

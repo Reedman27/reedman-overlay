@@ -3,19 +3,26 @@
 pkgname=wm-desktop
 pkgver=0.1.0
 pkgrel=1
-pkgdesc="Add-ons for Window Maker: notifications, file browser, menus"
+pkgdesc="Add-ons for Window Maker: notifications, file browser, media keys, menus"
 arch=('x86_64')
 url="https://github.com/Reedman27/wm-desktop"
 license=('MIT')
-depends=('libx11' 'libxft' 'fontconfig' 'dbus' 'windowmaker')   # windowmaker ships libwraster
+depends=('libx11' 'libxft' 'libxinerama' 'fontconfig' 'dbus' 'windowmaker')   # windowmaker ships libwraster
+optdepends=('wireplumber: volume keys (wpctl)'
+            'libpulse: volume keys (pactl)'
+            'alsa-utils: volume keys (amixer)'
+            'playerctl: media keys for MPRIS players'
+            'mpc: media keys for MPD'
+            'brightnessctl: brightness keys without a udev rule'
+            'xdg-utils: default apps for the launcher keys')
 makedepends=('git' 'pkgconf')
 source=("git+https://github.com/Reedman27/wm-desktop.git")
 sha256sums=('SKIP')
 
 build() {
-	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes
+	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=yes
 }
 
 package() {
-	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=yes DESTDIR="$pkgdir" install
+	make -C wm-desktop PREFIX=/usr WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=yes DESTDIR="$pkgdir" install
 }

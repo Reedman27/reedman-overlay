@@ -17,7 +17,7 @@
 Name:           wm-desktop
 Version:        0+git%{snapdate}.%{shortcommit}
 Release:        0
-Summary:        Add-ons for Window Maker: notifications, file browser, menus
+Summary:        Add-ons for Window Maker: notifications, file browser, media keys, menus
 License:        MIT
 URL:            https://github.com/Reedman27/wm-desktop
 Source0:        wm-desktop-%{commit}.tar.gz
@@ -28,6 +28,7 @@ BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(xft)
 BuildRequires:  pkgconfig(fontconfig)
 BuildRequires:  pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(xinerama)
 %if %{with wraster}
 BuildRequires:  pkgconfig(wrlib)
 %endif
@@ -38,11 +39,17 @@ BuildRequires:  xorg-x11-server-Xvfb
 %endif
 Requires:       hicolor-icon-theme
 Recommends:     WindowMaker
+# wmmediakeys calls these at run time; none is needed to build
+Recommends:     playerctl
+Recommends:     brightnessctl
+Recommends:     xdg-utils
+Suggests:       mpclient
 
 %description
 Small programs that run beside stock Window Maker and add what it lacks: an application menu
 that knows Flatpak, safe launching, a freedesktop notification daemon (wmnotify), a column
-file browser (wmfiles), dock helpers and settings. Everything takes its colours, textures and
+file browser (wmfiles), multimedia keys with an on-screen display (wmmediakeys), dock helpers
+and settings. Everything takes its colours, textures and
 fonts from the active Window Maker theme. Nothing here patches or replaces Window Maker.
 
 %prep
@@ -53,18 +60,18 @@ make %{?_smp_mflags} \
     PREFIX=%{_prefix} \
     CFLAGS="%{optflags}" \
     LDFLAGS="%{?build_ldflags}" \
-    WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
+    WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
 
 %install
 make install \
     PREFIX=%{_prefix} DESTDIR=%{buildroot} \
     CFLAGS="%{optflags}" \
     LDFLAGS="%{?build_ldflags}" \
-    WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
+    WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
 
 %check
 %if %{with check}
-make check PREFIX=%{_prefix} WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
+make check PREFIX=%{_prefix} WITH_FILES=yes WITH_NOTIFY=yes WITH_MEDIAKEYS=yes WITH_XINERAMA=yes WITH_WRASTER=%{?with_wraster:yes}%{!?with_wraster:no}
 %endif
 
 %files
@@ -75,6 +82,7 @@ make check PREFIX=%{_prefix} WITH_FILES=yes WITH_NOTIFY=yes WITH_WRASTER=%{?with
 %{_bindir}/wmdock
 %{_bindir}/wmfiles
 %{_bindir}/wmgfx
+%{_bindir}/wmmediakeys
 %{_bindir}/wmmenud
 %{_bindir}/wmnotify
 %{_bindir}/wmnotify-send
